@@ -43,7 +43,7 @@
 -(UIImage*)backgroundImage
 {
     //// Color
-    CGFloat myRed=0.46875,myGreen=0.46875,myBlue=0.46875,myWhite=0.46875,alpha=1;
+    CGFloat myRed=0.46875,myGreen=0.15,myBlue=0.15,myWhite=0.15,alpha=1;
     UIColor *gradientBaseColor = self.baseColor;
     UIColor* gradientTopColor;
     UIColor* gradientMiddleColor;
