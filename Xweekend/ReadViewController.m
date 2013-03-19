@@ -28,12 +28,15 @@
 
 @implementation ReadViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil numOfIssues:(NSString *)numOfIssues
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        
+        m_Column = 1;
+        m_NumOfIssue = [numOfIssues integerValue] - 1;
+        NSLog(@"%i",m_NumOfIssue);
+
         m_tableView = [[UITableView alloc]initWithFrame:CGRectMake(10, 10, 300, 150) style:UITableViewStyleGrouped];
         m_tableView.layer.cornerRadius = 6;
         m_tableView.layer.masksToBounds = YES;
@@ -56,6 +59,11 @@
         [btCancel addTarget:self action:@selector(cancelShare) forControlEvents:UIControlEventTouchUpInside];
         [m_tableView addSubview:btCancel];
 
+        textView = [[UITextView alloc]initWithFrame:CGRectMake(5, 0, 280, 85)];
+        textView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
+        textView.font = [UIFont systemFontOfSize:17];
+        textView.delegate = self;
+
         backGround = [[UIView alloc]initWithFrame:[[UIScreen mainScreen] bounds]];
         backGround.backgroundColor = [UIColor blackColor];
         backGround.alpha = 0.7;
@@ -65,8 +73,8 @@
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(remove) name:@"remove" object:nil];
 
         UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        backButton.frame = CGRectMake(0, 0, 35, 30);
-        [backButton setBackgroundImage:[UIImage imageNamed:@"btn_back"] forState:UIControlStateNormal];
+        backButton.frame = CGRectMake(0, 0, 72, 30);
+        [backButton setBackgroundImage:[UIImage imageNamed:@"BUTTON1"] forState:UIControlStateNormal];
         [backButton addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
         UIBarButtonItem *liftButton = [[UIBarButtonItem alloc]initWithCustomView:backButton];
         [self.navigationItem setLeftBarButtonItem:liftButton];
@@ -74,16 +82,18 @@
         
         
         UIView *rightView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 120, 30)];
-        UIButton *bt1 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        bt1.frame = CGRectMake(0, 0, 35, 30);
+        UIButton *bt1 = [UIButton buttonWithType:UIButtonTypeCustom];
+        bt1.frame = CGRectMake(0, 0, 55, 30);
+        [bt1 setBackgroundImage:[UIImage imageNamed:@"BUTTON4"] forState:UIControlStateNormal];
         bt1.tag = 101;
-        [bt1 addTarget:self action:@selector(showThumbnail) forControlEvents:UIControlEventTouchUpInside];
+        [bt1 addTarget:self action:@selector(share: forEvent:) forControlEvents:UIControlEventTouchUpInside];
         [rightView addSubview:bt1];
         
-        UIButton *bt2 = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        bt2.frame = CGRectMake(40, 0, 35, 30);
+        UIButton *bt2 = [UIButton buttonWithType:UIButtonTypeCustom];
+        bt2.frame = CGRectMake(60, 0, 55, 30);
+        [bt2 setBackgroundImage:[UIImage imageNamed:@"BUTTON3"] forState:UIControlStateNormal];
         bt2.tag = 102;
-        [bt2 addTarget:self action:@selector(share: forEvent:) forControlEvents:UIControlEventTouchUpInside];
+        [bt2 addTarget:self action:@selector(showThumbnail) forControlEvents:UIControlEventTouchUpInside];
         [rightView addSubview:bt2];
 
         UIBarButtonItem *rightButton = [[UIBarButtonItem alloc]initWithCustomView:rightView];
@@ -126,6 +136,7 @@
     [UIView setAnimationDelegate:self];
     [UIView commitAnimations];
 //    [thumbnailView.view removeFromSuperview];
+    [(UIButton *)[self.navigationController.navigationBar viewWithTag:101] setEnabled:YES];
     isShow = NO;
 }
 
@@ -159,11 +170,11 @@
     SinaWeibo *sinaweibo = [self sinaweibo];
     if ([sinaweibo isAuthValid]) {
         
-        
+        NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[[[arrIssuesPlist objectAtIndex:m_NumOfIssue]objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
         [sinaweibo requestWithURL:@"statuses/upload.json"
                            params:[NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    textView.text, @"status",
-                                   [UIImage imageNamed:[[arrIssuesPlist objectAtIndex:0] objectForKey:@"cover"]], @"pic", nil]
+                                   [UIImage imageNamed:str], @"pic", nil]
                        httpMethod:@"POST"
                          delegate:self];
     }else{
@@ -181,6 +192,15 @@
 }
 
 
+- (void)turnToPage:(NSInteger)column
+{
+    m_Column = column;
+    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:m_NumOfIssue];
+    textView.text = [NSString stringWithFormat:@"推荐栏目%@",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
+
+//    NSLog(@"%i",m_Column);
+}
+
 - (void)showThumbnail
 {
     if (thumbnailView == nil) {
@@ -189,7 +209,8 @@
         [self.view addSubview:thumbnailView.view];
     }
     if (isShow) {
-        
+        [(UIButton *)[self.navigationController.navigationBar viewWithTag:101] setEnabled:YES];
+
         CGContextRef context = UIGraphicsGetCurrentContext();
         
         [UIView beginAnimations:nil context:context];
@@ -205,7 +226,8 @@
 //        [thumbnailView.view removeFromSuperview];
     }else{
         
-        
+        [(UIButton *)[self.navigationController.navigationBar viewWithTag:101] setEnabled:NO];
+
         CGContextRef context = UIGraphicsGetCurrentContext();
         
         [UIView beginAnimations:nil context:context];
@@ -246,7 +268,7 @@
 {
     NSString *path = [[NSBundle mainBundle] pathForResource:@"issues" ofType:@"plist"];
     arrIssuesPlist = [[NSArray alloc]initWithContentsOfFile:path];
-    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:0];
+    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:m_NumOfIssue];
     m_ColumnsView = nil;
     m_ColumnsView = [[ColumnsView alloc]initWithFrame:self.view.bounds withDic:dicIssueInfo delegate:self];
     [self.view addSubview:m_ColumnsView];
@@ -275,6 +297,10 @@
     m_ColumnsView = nil;
     [arrIssuesPlist release];
     arrIssuesPlist = nil;
+    [textView release];
+    textView = nil;
+    [backGround release];
+    backGround = nil;
     [super dealloc];
 }
 
@@ -347,14 +373,8 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
 
-    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:0];
-
-    
-    textView = [[UITextView alloc]initWithFrame:CGRectMake(5, 0, 280, 85)];
-    textView.text = [NSString stringWithFormat:@"%@",[dicIssueInfo objectForKey:@"shareInfo"]];
-    textView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
-    textView.font = [UIFont systemFontOfSize:17];
-    textView.delegate = self;
+    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:m_NumOfIssue];
+    textView.text = [NSString stringWithFormat:@"推荐栏目%@",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
     [cell addSubview:textView];
     [textView becomeFirstResponder];
     return cell;
@@ -373,10 +393,11 @@
     if ([sinaweibo isAuthValid]) {
         
         
+        NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[[[arrIssuesPlist objectAtIndex:m_NumOfIssue]objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
         [sinaweibo requestWithURL:@"statuses/upload.json"
                            params:[NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    textView.text, @"status",
-                                   [UIImage imageNamed:@"Xcover.jpg"], @"pic", nil]
+                                   [UIImage imageNamed:str], @"pic", nil]
                        httpMethod:@"POST"
                          delegate:self];
     }

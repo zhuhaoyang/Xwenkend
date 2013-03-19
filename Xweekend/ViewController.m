@@ -37,12 +37,18 @@
     arrIssuesPlist = [[NSArray alloc]initWithContentsOfFile:path];
 
     
-    btRead = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    btRead.frame = CGRectMake(100, 100, 100, 50);
-    [btRead setTitle:@"阅读" forState:UIControlStateNormal];
-    [btRead addTarget:self action:@selector(read) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:btRead];
+//    btRead = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+//    btRead.frame = CGRectMake(100, 100, 100, 50);
+//    [btRead setTitle:@"阅读" forState:UIControlStateNormal];
+//    [btRead addTarget:self action:@selector(test) forControlEvents:UIControlEventTouchUpInside];
+//    [self.view addSubview:btRead];
 }
+
+//- (void)test
+//{
+//    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://weibo.com/u/1760807974"]];
+//}
+
 
 - (void)dealloc
 {
@@ -58,15 +64,18 @@
 
 }
 
-- (void)read
+- (void)loadOrRead:(id)sender
 {
 //    if (m_ReadViewController) {
 //        [m_ReadViewController release];
 //        m_ReadViewController = nil;
 //    }
+    UIButton *bt = (UIButton *)sender;
+    NSMutableString *str = [NSMutableString stringWithFormat:@"%i",bt.tag];
+    [str deleteCharactersInRange:NSMakeRange(0, 1)];
     m_hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     m_hud.labelText = @"加载中...";
-    m_ReadViewController = [[ReadViewController alloc]initWithNibName:@"ReadViewController" bundle:[NSBundle mainBundle]];
+    m_ReadViewController = [[ReadViewController alloc]initWithNibName:@"ReadViewController" bundle:[NSBundle mainBundle] numOfIssues:str];
     [[UIApplication sharedApplication]setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
     [self.navigationController setNavigationBarHidden:YES animated:FALSE];
 //    [self setWantsFullScreenLayout:YES];
@@ -83,6 +92,8 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
 
 #pragma mark -
 #pragma mark table view delegate
@@ -129,7 +140,7 @@
     NSUInteger row = [indexPath row];
     UIImageView *cellBackgroundView;
     if (row != 0) {
-        cellBackgroundView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"background.png"]];
+        cellBackgroundView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"shelf"]];
         cellBackgroundView.frame = CGRectMake(0, 0, 768, 399);
         if (row == numOfRows) {
             cellBackgroundView.layer.shadowColor = [UIColor grayColor].CGColor;
@@ -150,25 +161,32 @@
             UIImage *image = [UIImage imageNamed:str];
             [bt setBackgroundImage:image forState:UIControlStateNormal];
             bt.tag = [[NSString stringWithFormat:@"1%i",num] integerValue];
-
+            [bt addTarget:self action:@selector(loadOrRead:) forControlEvents:UIControlEventTouchUpInside];
+            
             UIProgressView *progressView = [[UIProgressView alloc]initWithProgressViewStyle:UIProgressViewStyleDefault];
             progressView.frame = CGRectMake((column - 1)*256 + 20, 300, 216, 9);
             progressView.tag = [[NSString stringWithFormat:@"2%i",num] integerValue];
             progressView.alpha = 1;
             progressView.progress = 0.5;
+            
+            UIButton *btLoadOrRead = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            btLoadOrRead.frame = CGRectMake((column - 1)*256 + 88, 350, 80, 30);
+            [btLoadOrRead addTarget:self action:@selector(loadOrRead:) forControlEvents:UIControlEventTouchUpInside];
+            btLoadOrRead.tag = [[NSString stringWithFormat:@"3%i",num] integerValue];
+            
 //            bt.layer.shadowColor = [UIColor blackColor].CGColor;
 //            bt.layer.shadowOffset = CGSizeMake(0, 4);
 //            bt.layer.shadowOpacity = 0.5;
 //            bt.layer.shadowRadius = 4.0;
 
-//            [bt addTarget:self action:@selector(read) forControlEvents:UIControlEventTouchUpInside];
             [cell addSubview:bt];
             [cell addSubview:progressView];
+            [cell addSubview:btLoadOrRead];
             [progressView release];
             }
     }else{
         
-        cellBackgroundView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"title.png"]];
+        cellBackgroundView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"title"]];
         cellBackgroundView.frame = CGRectMake(0, 0, 768, 116);
         cellBackgroundView.layer.shadowColor = [UIColor grayColor].CGColor;
         cellBackgroundView.layer.shadowOffset = CGSizeMake(0, -4);

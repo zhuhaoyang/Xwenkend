@@ -23,7 +23,7 @@
     // Override point for customization after application launch.
     viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
     nav = [[UINavigationController alloc]initWithRootViewController:viewController];
-    [nav.navigationBar setBackgroundImage:[UIImage imageNamed:@"banner.png"] forBarMetrics:UIBarMetricsDefault];
+    [nav.navigationBar setBackgroundImage:[UIImage imageNamed:@"banner"] forBarMetrics:UIBarMetricsDefault];
     self.window.rootViewController = nav;
     [self.window makeKeyAndVisible];
     

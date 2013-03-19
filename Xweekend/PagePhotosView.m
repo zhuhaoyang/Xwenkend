@@ -21,86 +21,86 @@
 
 - (void)loadImage:(NSDictionary *)dic
 {
-    dicData = [[NSDictionary alloc]initWithDictionary:dic];
-    
-    // Initialization UIScrollView
-    
-       
-    for (int i = 1; i <= kNumberOfPages; i++) {
-        
-        
-        
-        
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSString *str = [NSString stringWithFormat:@"%@%iS",[dicData objectForKey:@"title"],i];
-                NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
-                UIImage *image1 = [UIImage imageWithContentsOfFile:path];
-                UIImageView *image = [[UIImageView alloc]initWithImage:image1];
-                CGRect frame = m_scrollView.frame;
-                frame.origin.x = 0;
-                frame.origin.y = frame.size.height * (i-1);
-                image.frame = frame;
-                [m_scrollView addSubview:image];
-                [image release];
-            });
-        });
-        
-        
-        //            NSString *str = [NSString stringWithFormat:@"%@%iS",[dicData objectForKey:@"title"],i];
-        //            NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
-        //            UIImage *image1 = [UIImage imageWithContentsOfFile:path];
-        //            UIImageView *image = [[UIImageView alloc]initWithImage:image1];
-        //            CGRect frame = m_scrollView.frame;
-        //            frame.origin.x = 0;
-        //            frame.origin.y = frame.size.height * (i-1);
-        //            image.frame = frame;
-        //            [m_scrollView addSubview:image];
-        //            [image release];
-    }
-    
-    
-    //		[self loadScrollViewWithPage:1];
-    NSString *str = [NSString stringWithFormat:@"%@1",[dicData objectForKey:@"title"]];
-    //    UIImage *image = [UIImage imageNamed:str];
-    
-    //    UIImage *image = [[UIImage alloc]initWithContentsOfFile:path];
-    //    UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
-    //        bigImage = [[UIImageView alloc]init];
-    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
-    UIImage *image = [UIImage imageWithContentsOfFile:path];
-    
-    UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
-    //        NSLog(@"%i",bigImage.retainCount);
-    
-    //    [image release];
-    image = nil;
-    CGRect frame = m_scrollView.frame;
-    frame.origin.x = 0;
-    frame.origin.y = 0;
-    bigImage.frame = frame;
-    bigImage.tag = 1;
-    [m_scrollView addSubview:bigImage];
-    //        NSLog(@"%i",bigImage.retainCount);
-    
-    //    [image release];
-    //        bigImage.image = nil;
-    [bigImage release];
-    //        NSLog(@"%i",bigImage.retainCount);
-    
-    //    bigImage = nil;
-    
-    
-    
-    
-    //        MCImageViewWithPreview * imageView = [[MCImageViewWithPreview alloc] initWithFrame:m_scrollView.frame];
-    //        imageView.previewImageName = [NSString stringWithFormat:@"%@1S.jpg",[dicData objectForKey:@"title"]];
-    //        imageView.imageName = [NSString stringWithFormat:@"%@1.jpg",[dicData objectForKey:@"title"]];
-    //        imageView.tag = 1;
-    //        [m_scrollView addSubview:imageView];
-    //        [imageView release];
-
-
+//    dicData = [[NSDictionary alloc]initWithDictionary:dic];
+//    
+//    // Initialization UIScrollView
+//    
+//       
+//    for (int i = 1; i <= kNumberOfPages; i++) {
+//        
+//        
+//        
+//        
+//        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                NSString *str = [NSString stringWithFormat:@"%@%iS",[dicData objectForKey:@"title"],i];
+//                NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+//                UIImage *image1 = [UIImage imageWithContentsOfFile:path];
+//                UIImageView *image = [[UIImageView alloc]initWithImage:image1];
+//                CGRect frame = m_scrollView.frame;
+//                frame.origin.x = 0;
+//                frame.origin.y = frame.size.height * (i-1);
+//                image.frame = frame;
+//                [m_scrollView addSubview:image];
+//                [image release];
+//            });
+//        });
+//        
+//        
+//        //            NSString *str = [NSString stringWithFormat:@"%@%iS",[dicData objectForKey:@"title"],i];
+//        //            NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+//        //            UIImage *image1 = [UIImage imageWithContentsOfFile:path];
+//        //            UIImageView *image = [[UIImageView alloc]initWithImage:image1];
+//        //            CGRect frame = m_scrollView.frame;
+//        //            frame.origin.x = 0;
+//        //            frame.origin.y = frame.size.height * (i-1);
+//        //            image.frame = frame;
+//        //            [m_scrollView addSubview:image];
+//        //            [image release];
+//    }
+//    
+//    
+//    //		[self loadScrollViewWithPage:1];
+//    NSString *str = [NSString stringWithFormat:@"%@1",[dicData objectForKey:@"title"]];
+//    //    UIImage *image = [UIImage imageNamed:str];
+//    
+//    //    UIImage *image = [[UIImage alloc]initWithContentsOfFile:path];
+//    //    UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
+//    //        bigImage = [[UIImageView alloc]init];
+//    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+//    UIImage *image = [UIImage imageWithContentsOfFile:path];
+//    
+//    UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
+//    //        NSLog(@"%i",bigImage.retainCount);
+//    
+//    //    [image release];
+//    image = nil;
+//    CGRect frame = m_scrollView.frame;
+//    frame.origin.x = 0;
+//    frame.origin.y = 0;
+//    bigImage.frame = frame;
+//    bigImage.tag = 1;
+//    [m_scrollView addSubview:bigImage];
+//    //        NSLog(@"%i",bigImage.retainCount);
+//    
+//    //    [image release];
+//    //        bigImage.image = nil;
+//    [bigImage release];
+//    //        NSLog(@"%i",bigImage.retainCount);
+//    
+//    //    bigImage = nil;
+//    
+//    
+//    
+//    
+//    //        MCImageViewWithPreview * imageView = [[MCImageViewWithPreview alloc] initWithFrame:m_scrollView.frame];
+//    //        imageView.previewImageName = [NSString stringWithFormat:@"%@1S.jpg",[dicData objectForKey:@"title"]];
+//    //        imageView.imageName = [NSString stringWithFormat:@"%@1.jpg",[dicData objectForKey:@"title"]];
+//    //        imageView.tag = 1;
+//    //        [m_scrollView addSubview:imageView];
+//    //        [imageView release];
+//
+//
 }
 
 - (id)initWithFrame:(CGRect)frame withDic:(NSDictionary *)dic
@@ -130,7 +130,8 @@
         m_scrollView.maximumZoomScale = 20;
         m_scrollView.canCancelContentTouches = YES;
         m_scrollView.userInteractionEnabled = YES;
-        
+        m_scrollView.alwaysBounceVertical = YES;
+
 		for (int i = 1; i <= kNumberOfPages; i++) {
             
             
@@ -147,38 +148,19 @@
                             frame.origin.y = frame.size.height * (i-1);
                             image.frame = frame;
                             [m_scrollView addSubview:image];
+                            [m_scrollView sendSubviewToBack:image];
                             [image release];
                     });
                 });
-            
-            
-//            NSString *str = [NSString stringWithFormat:@"%@%iS",[dicData objectForKey:@"title"],i];
-//            NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
-//            UIImage *image1 = [UIImage imageWithContentsOfFile:path];
-//            UIImageView *image = [[UIImageView alloc]initWithImage:image1];
-//            CGRect frame = m_scrollView.frame;
-//            frame.origin.x = 0;
-//            frame.origin.y = frame.size.height * (i-1);
-//            image.frame = frame;
-//            [m_scrollView addSubview:image];
-//            [image release];
 		}
         
         
-//		[self loadScrollViewWithPage:1];
         NSString *str = [NSString stringWithFormat:@"%@1",[dicData objectForKey:@"title"]];
-        //    UIImage *image = [UIImage imageNamed:str];
-        
-        //    UIImage *image = [[UIImage alloc]initWithContentsOfFile:path];
-        //    UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
-//        bigImage = [[UIImageView alloc]init];
         NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
         UIImage *image = [UIImage imageWithContentsOfFile:path];
         
        UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
-//        NSLog(@"%i",bigImage.retainCount);
 
-        //    [image release];
         image = nil;
         CGRect frame = m_scrollView.frame;
         frame.origin.x = 0;
@@ -186,24 +168,7 @@
         bigImage.frame = frame;
         bigImage.tag = 1;
         [m_scrollView addSubview:bigImage];
-//        NSLog(@"%i",bigImage.retainCount);
-
-        //    [image release];
-//        bigImage.image = nil;
         [bigImage release];
-//        NSLog(@"%i",bigImage.retainCount);
-
-        //    bigImage = nil;
-        
-
-        
-
-//        MCImageViewWithPreview * imageView = [[MCImageViewWithPreview alloc] initWithFrame:m_scrollView.frame];
-//        imageView.previewImageName = [NSString stringWithFormat:@"%@1S.jpg",[dicData objectForKey:@"title"]];
-//        imageView.imageName = [NSString stringWithFormat:@"%@1.jpg",[dicData objectForKey:@"title"]];
-//        imageView.tag = 1;
-//        [m_scrollView addSubview:imageView];
-//        [imageView release];
     }
     return self;
 
@@ -287,8 +252,13 @@
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
 }
 
+
+
 // At the end of scroll animation, reset the boolean used when scrolls originate from the UIPageControl
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+//- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
+{
     UIImageView *view =(UIImageView*)[scrollView viewWithTag:page];
 //    NSLog(@"%i",view.retainCount);
     [view removeFromSuperview];

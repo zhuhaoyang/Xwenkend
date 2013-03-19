@@ -30,7 +30,7 @@
         // Initialization UIScrollView
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(move:) name:@"moveTo" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hidden:) name:@"hidden" object:nil];
-
+        page = 1;
 		m_ScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
         [self addSubview:m_ScrollView];
         
@@ -51,6 +51,7 @@
         m_ScrollView.maximumZoomScale = 20;
         m_ScrollView.userInteractionEnabled = YES;
         m_ScrollView.canCancelContentTouches = YES;
+
         UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
         [singleTap setNumberOfTapsRequired:1];
         [m_ScrollView addGestureRecognizer:singleTap];
@@ -114,7 +115,7 @@
                 NSString *str = [NSString stringWithFormat:@"COVER%@",[[arrData objectAtIndex:i] objectForKey:@"title"]];
                 //    UIImage *image = [UIImage imageNamed:str];
                 
-                NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"png"];
+                NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
                 UIImage *image = [UIImage imageWithContentsOfFile:path];
 
                 
@@ -166,7 +167,8 @@
 //    NSLog(@"%@",dic);
     NSInteger column = [[dic objectForKey:@"column"] integerValue];
     NSInteger m_page = [[dic objectForKey:@"page"] integerValue];
-    
+    [self.m_delegate turnToPage:column];
+
     CGPoint point = CGPointMake(192*(column-1), 0);
     if (point.x >= (thumbnailScrollView.contentSize.width - 192*4)) {
         point = CGPointMake(thumbnailScrollView.contentSize.width - 192*4, 0);
@@ -199,6 +201,8 @@
     UIButton *bt = sender;
     [m_ScrollView setContentOffset:CGPointMake(bt.frame.origin.x*4, 0) animated:YES];
     CGPoint point = CGPointMake(bt.frame.origin.x, 0);
+    page = point.x/192 + 1;
+    [self.m_delegate turnToPage:page];
     if (point.x >= (thumbnailScrollView.contentSize.width - 192*4)) {
         point = CGPointMake(thumbnailScrollView.contentSize.width - 192*4, 0);
     }
@@ -225,11 +229,12 @@
 
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    if (scrollView == m_ScrollView) {
-        CGFloat pageWidth = scrollView.frame.size.width;
-		int index = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth);
-		page = index;
-    }
+//    if (scrollView == m_ScrollView) {
+//        CGFloat pageWidth = scrollView.frame.size.width;
+//		int index = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth);
+//		page = index;
+//        NSLog(@"%i",page);
+//    }
 }
 
 // At the begin of scroll dragging, reset the boolean used when scrolls originate from the UIPageControl
@@ -240,8 +245,17 @@
 // At the end of scroll animation, reset the boolean used when scrolls originate from the UIPageControl
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
+    
+
     if (scrollView == m_ScrollView) {
-        CGPoint point = CGPointMake(192*(page+1), 0);
+        CGFloat pageWidth = scrollView.frame.size.width;
+        int index = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth);
+        page = index + 1;
+//        NSLog(@"%i",page);
+        
+        [self.m_delegate turnToPage:(page + 1)];
+        
+        CGPoint point = CGPointMake(192*(page), 0);
         if (point.x >= (thumbnailScrollView.contentSize.width - 192*4)) {
             point = CGPointMake(thumbnailScrollView.contentSize.width - 192*4, 0);
         }

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
-#import "MCImageViewWithPreview.h"
+//#import "MCImageViewWithPreview.h"
 
 
 

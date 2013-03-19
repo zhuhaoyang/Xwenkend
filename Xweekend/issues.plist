@@ -11,107 +11,7 @@
 				<key>cover</key>
 				<string>COVERA.png</string>
 				<key>numOfPaages</key>
-				<string>7</string>
-				<key>title</key>
-				<string>A</string>
-			</dict>
-			<dict>
-				<key>columnInfo</key>
-				<string>专栏介绍(如无介绍可为空)</string>
-				<key>cover</key>
-				<string>COVERA.png</string>
-				<key>numOfPaages</key>
-				<string>7</string>
-				<key>title</key>
-				<string>A</string>
-			</dict>
-			<dict>
-				<key>columnInfo</key>
-				<string>专栏介绍(如无介绍可为空)</string>
-				<key>cover</key>
-				<string>COVERA.png</string>
-				<key>numOfPaages</key>
-				<string>7</string>
-				<key>title</key>
-				<string>A</string>
-			</dict>
-			<dict>
-				<key>columnInfo</key>
-				<string>专栏介绍(如无介绍可为空)</string>
-				<key>cover</key>
-				<string>COVERA.png</string>
-				<key>numOfPaages</key>
-				<string>7</string>
-				<key>title</key>
-				<string>A</string>
-			</dict>
-			<dict>
-				<key>columnInfo</key>
-				<string>专栏介绍(如无介绍可为空)</string>
-				<key>cover</key>
-				<string>COVERA.png</string>
-				<key>numOfPaages</key>
-				<string>7</string>
-				<key>title</key>
-				<string>A</string>
-			</dict>
-			<dict>
-				<key>columnInfo</key>
-				<string>专栏介绍(如无介绍可为空)</string>
-				<key>cover</key>
-				<string>COVERA.png</string>
-				<key>numOfPaages</key>
-				<string>7</string>
-				<key>title</key>
-				<string>A</string>
-			</dict>
-			<dict>
-				<key>columnInfo</key>
-				<string>专栏介绍(如无介绍可为空)</string>
-				<key>cover</key>
-				<string>COVERA.png</string>
-				<key>numOfPaages</key>
-				<string>7</string>
-				<key>title</key>
-				<string>A</string>
-			</dict>
-			<dict>
-				<key>columnInfo</key>
-				<string>专栏介绍(如无介绍可为空)</string>
-				<key>cover</key>
-				<string>COVERA.png</string>
-				<key>numOfPaages</key>
-				<string>7</string>
-				<key>title</key>
-				<string>A</string>
-			</dict>
-			<dict>
-				<key>columnInfo</key>
-				<string>专栏介绍(如无介绍可为空)</string>
-				<key>cover</key>
-				<string>COVERA.png</string>
-				<key>numOfPaages</key>
-				<string>7</string>
-				<key>title</key>
-				<string>A</string>
-			</dict>
-			<dict>
-				<key>columnInfo</key>
-				<string>专栏介绍(如无介绍可为空)</string>
-				<key>cover</key>
-				<string>COVERA.png</string>
-				<key>numOfPaages</key>
-				<string>7</string>
-				<key>title</key>
-				<string>A</string>
-			</dict>
-			<dict>
-				<key>columnInfo</key>
-				<string>专栏介绍(如无介绍可为空)</string>
-				<key>cover</key>
-				<string>COVERA.png</string>
-				<key>numOfPaages</key>
-				<string>7</string>
+				<string>1</string>
 				<key>title</key>
 				<string>A</string>
 			</dict>
@@ -121,7 +21,7 @@
 				<key>cover</key>
 				<string>COVERB.png</string>
 				<key>numOfPaages</key>
-				<string>5</string>
+				<string>9</string>
 				<key>title</key>
 				<string>B</string>
 			</dict>
@@ -141,7 +41,7 @@
 				<key>cover</key>
 				<string>COVERD.png</string>
 				<key>numOfPaages</key>
-				<string>3</string>
+				<string>8</string>
 				<key>title</key>
 				<string>D</string>
 			</dict>
@@ -151,7 +51,7 @@
 				<key>cover</key>
 				<string>COVERE.png</string>
 				<key>numOfPaages</key>
-				<string>6</string>
+				<string>9</string>
 				<key>title</key>
 				<string>E</string>
 			</dict>
@@ -161,9 +61,99 @@
 				<key>cover</key>
 				<string>COVERF.png</string>
 				<key>numOfPaages</key>
-				<string>3</string>
+				<string>22</string>
 				<key>title</key>
 				<string>F</string>
+			</dict>
+			<dict>
+				<key>columnInfo</key>
+				<string>专栏介绍(如无介绍可为空)</string>
+				<key>cover</key>
+				<string>COVERG.png</string>
+				<key>numOfPaages</key>
+				<string>5</string>
+				<key>title</key>
+				<string>G</string>
+			</dict>
+			<dict>
+				<key>columnInfo</key>
+				<string>专栏介绍(如无介绍可为空)</string>
+				<key>cover</key>
+				<string>COVERH.png</string>
+				<key>numOfPaages</key>
+				<string>7</string>
+				<key>title</key>
+				<string>H</string>
+			</dict>
+			<dict>
+				<key>columnInfo</key>
+				<string>专栏介绍(如无介绍可为空)</string>
+				<key>cover</key>
+				<string>COVERI.png</string>
+				<key>numOfPaages</key>
+				<string>15</string>
+				<key>title</key>
+				<string>I</string>
+			</dict>
+			<dict>
+				<key>columnInfo</key>
+				<string>专栏介绍(如无介绍可为空)</string>
+				<key>cover</key>
+				<string>COVERJ.png</string>
+				<key>numOfPaages</key>
+				<string>6</string>
+				<key>title</key>
+				<string>J</string>
+			</dict>
+			<dict>
+				<key>columnInfo</key>
+				<string>专栏介绍(如无介绍可为空)</string>
+				<key>cover</key>
+				<string>COVERK.png</string>
+				<key>numOfPaages</key>
+				<string>4</string>
+				<key>title</key>
+				<string>K</string>
+			</dict>
+			<dict>
+				<key>columnInfo</key>
+				<string>专栏介绍(如无介绍可为空)</string>
+				<key>cover</key>
+				<string>COVERL.png</string>
+				<key>numOfPaages</key>
+				<string>4</string>
+				<key>title</key>
+				<string>L</string>
+			</dict>
+			<dict>
+				<key>columnInfo</key>
+				<string>专栏介绍(如无介绍可为空)</string>
+				<key>cover</key>
+				<string>COVERM.png</string>
+				<key>numOfPaages</key>
+				<string>4</string>
+				<key>title</key>
+				<string>M</string>
+			</dict>
+			<dict>
+				<key>columnInfo</key>
+				<string>专栏介绍(如无介绍可为空)</string>
+				<key>cover</key>
+				<string>COVERN.png</string>
+				<key>numOfPaages</key>
+				<string>6</string>
+				<key>title</key>
+				<string>N</string>
+			</dict>
+			<dict>
+				<key>columnInfo</key>
+				<string>专栏介绍(如无介绍可为空)</string>
+				<key>cover</key>
+				<string>COVERO.png</string>
+				<key>numOfPaages</key>
+				<string>4</string>
+				<key>title</key>
+				<string>O</string>
 			</dict>
 		</array>
 		<key>contentUrl</key>
@@ -176,8 +166,6 @@
 		<string>201301</string>
 		<key>title</key>
 		<string>行报2013年1月刊</string>
-		<key>shareInfo</key>
-		<string>这本书很不错哦</string>
 	</dict>
 	<dict>
 		<key>contentInfo</key>

@@ -29,6 +29,9 @@ UITableViewDataSource,UITableViewDelegate>{
     UITableView *m_tableView;
     UIView *backGround;
     UITextView *textView;
+    NSInteger m_Column;
+    NSInteger m_NumOfIssue;
 }
-
+//@property (nonatomic,assign) NSInteger 
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil numOfIssues:(NSString *)numOfIssues;
 @end

@@ -120,7 +120,7 @@
 {
 //    NSLog(@"%f",scrollView.contentOffset.x);
     NSInteger offSet = scrollView.contentOffset.x/200+4;
-    NSLog(@"%ld",(long)offSet);
+//    NSLog(@"%ld",(long)offSet);
 
     if ([arrThumbnailInfo count] <= 4 ||offSet >([arrThumbnailInfo count] - 1)) {
         return;
@@ -142,7 +142,7 @@
         
         
         NSInteger offSet = scrollView.contentOffset.x/200+4;
-        NSLog(@"%ld",(long)offSet);
+//        NSLog(@"%ld",(long)offSet);
         if (offSet < [arrThumbnailInfo count]) {
             NSDictionary *dic = [arrThumbnailInfo objectAtIndex:offSet];
             NSInteger numOfPaages = [[dic objectForKey:@"numOfPaages"] integerValue];
@@ -195,7 +195,11 @@
 - (void)dealloc
 {
     [m_ScrollView release];
+    m_ScrollView = nil;
     [arrThumbnailInfo release];
+    arrThumbnailInfo = nil;
+    [arrTag release];
+    arrTag = nil;
     [super dealloc];
 }
 

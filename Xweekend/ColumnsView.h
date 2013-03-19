@@ -16,7 +16,7 @@
     UIScrollView *thumbnailScrollView;
 	PagePhotosView *pagePhotosView;
 	NSArray *arrData;
-    int page;
+    NSInteger page;
 	BOOL isThumbnailShow;
     
 }
@@ -27,5 +27,6 @@
 - (void)loadBigImage:(int)page;
 @end
 @protocol ColumnsDelegate<NSObject>
--(void)Hidden;
+- (void)Hidden;
+- (void)turnToPage:(NSInteger)column;
 @end
