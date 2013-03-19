@@ -155,7 +155,7 @@
                 break;
             }
             UIButton * bt = [UIButton buttonWithType:UIButtonTypeCustom];
-            bt.frame = CGRectMake((column - 1)*256 + 15.5, 30, 225, 300);
+            bt.frame = CGRectMake((column - 1)*256 + 28, 30, 200, 266);
             
             NSString *str = [[arrIssuesPlist objectAtIndex:(num - 1)] objectForKey:@"cover"];
             UIImage *image = [UIImage imageNamed:str];
@@ -169,8 +169,9 @@
             progressView.alpha = 1;
             progressView.progress = 0.5;
             
-            UIButton *btLoadOrRead = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-            btLoadOrRead.frame = CGRectMake((column - 1)*256 + 88, 350, 80, 30);
+            UIButton *btLoadOrRead = [UIButton buttonWithType:UIButtonTypeCustom];
+            btLoadOrRead.frame = CGRectMake((column - 1)*256 + 74.5, 330, 107, 39);
+            [btLoadOrRead setBackgroundImage:[UIImage imageNamed:@"ICON1"] forState:UIControlStateNormal];
             [btLoadOrRead addTarget:self action:@selector(loadOrRead:) forControlEvents:UIControlEventTouchUpInside];
             btLoadOrRead.tag = [[NSString stringWithFormat:@"3%i",num] integerValue];
             
