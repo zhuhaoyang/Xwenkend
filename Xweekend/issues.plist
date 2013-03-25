@@ -3,8 +3,35 @@
 <plist version="1.0">
 <array>
 	<dict>
+		<key>weiboURL</key>
+		<dict>
+			<key>H7</key>
+			<string>http://weibo.com/u/1760807974</string>
+			<key>H6</key>
+			<string>http://weibo.com/dajiaoyin</string>
+			<key>H5</key>
+			<string>http://weibo.com/hujiujiu</string>
+			<key>H4</key>
+			<string>http://weibo.com/ftly</string>
+			<key>H3</key>
+			<string>http://weibo.com/wuang</string>
+			<key>H2</key>
+			<string>http://weibo.com/u/1286356063</string>
+			<key>H1</key>
+			<string>http://weibo.com/u/1496863563</string>
+		</dict>
 		<key>contentInfo</key>
 		<array>
+			<dict>
+				<key>columnInfo</key>
+				<string></string>
+				<key>cover</key>
+				<string>coverpreview.png</string>
+				<key>numOfPaages</key>
+				<string>1</string>
+				<key>title</key>
+				<string>Z</string>
+			</dict>
 			<dict>
 				<key>columnInfo</key>
 				<string>专栏介绍(如无介绍可为空)</string>
@@ -159,7 +186,7 @@
 		<key>contentUrl</key>
 		<string>http://www.viggiosoft.com/media/data/blog/newsstand/magazine-0.zip</string>
 		<key>cover</key>
-		<string>Xcover.jpg</string>
+		<string>coverpreview.png</string>
 		<key>date</key>
 		<string>2013年1月1号</string>
 		<key>issueId</key>

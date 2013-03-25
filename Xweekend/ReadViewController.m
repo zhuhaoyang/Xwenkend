@@ -270,7 +270,7 @@
     arrIssuesPlist = [[NSArray alloc]initWithContentsOfFile:path];
     NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:m_NumOfIssue];
     m_ColumnsView = nil;
-    m_ColumnsView = [[ColumnsView alloc]initWithFrame:self.view.bounds withDic:dicIssueInfo delegate:self];
+    m_ColumnsView = [[ColumnsView alloc]initWithFrame:self.view.bounds withDic:dicIssueInfo delegate:self numOfIssue:m_NumOfIssue];
     [self.view addSubview:m_ColumnsView];
 //    NSLog(@"hide!");
     [MBProgressHUD hideHUDForView:self.view animated:YES];

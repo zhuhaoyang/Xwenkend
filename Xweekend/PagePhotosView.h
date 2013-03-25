@@ -8,24 +8,29 @@
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
+#import "btVisitWeibo.h"
 //#import "MCImageViewWithPreview.h"
 
 
 
 @interface PagePhotosView : UIView
-<UIScrollViewDelegate> {
+<UIScrollViewDelegate,UIGestureRecognizerDelegate> {
 	UIScrollView *m_scrollView;
 //	NSMutableArray *imageViews;
     NSDictionary *dicData;
     NSArray *arrData;
 //    UIImageView *bigImage;
-    int kNumberOfPages;
-    int page;
+    NSInteger kNumberOfPages;
+    NSInteger page;
+    NSInteger nowPage;
+    NSMutableArray *arrTag;
+    NSDictionary *dicWeiboURL;
 }
 
 //@property (nonatomic, strong) NSMutableArray *imageViews;
-- (id)initWithFrame:(CGRect)frame withDic:(NSDictionary *)dic;
-- (void)loadImage:(NSDictionary *)dic;
+- (id)initWithFrame:(CGRect)frame withDic:(NSDictionary *)dic numOfIssue:(NSInteger)numOfIssue;
+- (void)loadImage:(NSInteger)m_page;
+- (void)removeImage:(NSInteger)m_page;
 //- (void)move:(NSInteger)m_page;
 //- (void)loadBigImage:(int)page;
 @end

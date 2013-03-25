@@ -18,103 +18,89 @@
 @end
 
 @implementation PagePhotosView
-
-- (void)loadImage:(NSDictionary *)dic
+- (void)removeImage:(NSInteger)m_page
 {
-//    dicData = [[NSDictionary alloc]initWithDictionary:dic];
-//    
-//    // Initialization UIScrollView
-//    
-//       
-//    for (int i = 1; i <= kNumberOfPages; i++) {
-//        
-//        
-//        
-//        
-//        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                NSString *str = [NSString stringWithFormat:@"%@%iS",[dicData objectForKey:@"title"],i];
-//                NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
-//                UIImage *image1 = [UIImage imageWithContentsOfFile:path];
-//                UIImageView *image = [[UIImageView alloc]initWithImage:image1];
-//                CGRect frame = m_scrollView.frame;
-//                frame.origin.x = 0;
-//                frame.origin.y = frame.size.height * (i-1);
-//                image.frame = frame;
-//                [m_scrollView addSubview:image];
-//                [image release];
-//            });
-//        });
-//        
-//        
-//        //            NSString *str = [NSString stringWithFormat:@"%@%iS",[dicData objectForKey:@"title"],i];
-//        //            NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
-//        //            UIImage *image1 = [UIImage imageWithContentsOfFile:path];
-//        //            UIImageView *image = [[UIImageView alloc]initWithImage:image1];
-//        //            CGRect frame = m_scrollView.frame;
-//        //            frame.origin.x = 0;
-//        //            frame.origin.y = frame.size.height * (i-1);
-//        //            image.frame = frame;
-//        //            [m_scrollView addSubview:image];
-//        //            [image release];
-//    }
-//    
-//    
-//    //		[self loadScrollViewWithPage:1];
-//    NSString *str = [NSString stringWithFormat:@"%@1",[dicData objectForKey:@"title"]];
-//    //    UIImage *image = [UIImage imageNamed:str];
-//    
-//    //    UIImage *image = [[UIImage alloc]initWithContentsOfFile:path];
-//    //    UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
-//    //        bigImage = [[UIImageView alloc]init];
-//    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
-//    UIImage *image = [UIImage imageWithContentsOfFile:path];
-//    
-//    UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
-//    //        NSLog(@"%i",bigImage.retainCount);
-//    
-//    //    [image release];
-//    image = nil;
-//    CGRect frame = m_scrollView.frame;
-//    frame.origin.x = 0;
-//    frame.origin.y = 0;
-//    bigImage.frame = frame;
-//    bigImage.tag = 1;
-//    [m_scrollView addSubview:bigImage];
-//    //        NSLog(@"%i",bigImage.retainCount);
-//    
-//    //    [image release];
-//    //        bigImage.image = nil;
-//    [bigImage release];
-//    //        NSLog(@"%i",bigImage.retainCount);
-//    
-//    //    bigImage = nil;
-//    
-//    
-//    
-//    
-//    //        MCImageViewWithPreview * imageView = [[MCImageViewWithPreview alloc] initWithFrame:m_scrollView.frame];
-//    //        imageView.previewImageName = [NSString stringWithFormat:@"%@1S.jpg",[dicData objectForKey:@"title"]];
-//    //        imageView.imageName = [NSString stringWithFormat:@"%@1.jpg",[dicData objectForKey:@"title"]];
-//    //        imageView.tag = 1;
-//    //        [m_scrollView addSubview:imageView];
-//    //        [imageView release];
-//
-//
+    if (m_page < 1 || m_page > kNumberOfPages || m_page == page || m_page == (page+1) || m_page == (page-1) ) {
+        return;
+    }
+    UIImageView *imageView = (UIImageView *)[m_scrollView viewWithTag:m_page];
+    [imageView removeFromSuperview];
+    [arrTag replaceObjectAtIndex:(m_page-1) withObject:[NSNumber numberWithBool:NO]];
+}
+- (void)loadImage:(NSInteger)m_page
+{
+    if (m_page < 1 || m_page > kNumberOfPages) {
+        return;
+    }
+    if ([[arrTag objectAtIndex:(m_page - 1)] boolValue]) {
+        return;
+    }
+//    NSString *str = @"999";
+    NSString *str = [NSString stringWithFormat:@"%@%i",[dicData objectForKey:@"title"],m_page];
+    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+    UIImage *image = [UIImage imageWithContentsOfFile:path];
+    
+    UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
+    
+    CGRect frame = m_scrollView.frame;
+    frame.origin.x = 0;
+    frame.origin.y = frame.size.height * (m_page-1);
+    bigImage.frame = frame;
+    bigImage.tag = m_page;
+    [m_scrollView addSubview:bigImage];
+    [bigImage release];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"hidden" object:nil];
+    [arrTag replaceObjectAtIndex:(m_page - 1) withObject:[NSNumber numberWithBool:YES]];
+
+    if ([dicWeiboURL objectForKey:str] != nil) {
+        btVisitWeibo *m_btVisitWeibo = [btVisitWeibo buttonWithType:UIButtonTypeCustom];
+//        btVisitWeibo *m_btVisitWeibo = [[btVisitWeibo alloc]initWithFrame:CGRectMake(20, 281, 144, 44)];
+//        m_btVisitWeibo.buttonType = UIButtonTypeRoundedRect;
+//        [m_btVisitWeibo setBackgroundColor:[UIColor blackColor]];
+//        m_btVisitWeibo.alpha = 0;
+        m_btVisitWeibo.frame = CGRectMake(20, frame.size.height * (m_page-1)+281, 144, 44);
+        [m_btVisitWeibo addTarget:self action:@selector(visitWeibo:) forControlEvents:UIControlEventTouchUpInside];
+//        [m_btVisitWeibo setUrl:[dicWeiboURL objectForKey:str]];
+        m_btVisitWeibo.url = [dicWeiboURL objectForKey:str];
+//        NSLog(@"%@",[m_btVisitWeibo getUrl]);
+//        [m_btVisitWeibo release];
+        [m_scrollView addSubview:m_btVisitWeibo];
+
+    }
+
+
+
 }
 
-- (id)initWithFrame:(CGRect)frame withDic:(NSDictionary *)dic
+- (void)visitWeibo:(id)sender
+{
+    btVisitWeibo *bt = sender;
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:bt.url]];
+}
+
+- (id)initWithFrame:(CGRect)frame withDic:(NSDictionary *)dic numOfIssue:(NSInteger)numOfIssue
 {
     if ((self = [super initWithFrame:frame])) {
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(move:) name:@"move" object:nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(remove:) name:@"removePage" object:nil];
+
         page = 1;
         dicData = [[NSDictionary alloc]initWithDictionary:dic];
 
 		m_scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
         
 		[self addSubview:m_scrollView];
-		
-        kNumberOfPages = [[dic objectForKey:@"numOfPaages"] intValue];
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"issues" ofType:@"plist"];
+        NSArray *arr = [[NSArray alloc]initWithContentsOfFile:path];
+        NSDictionary *dicIssueInfo = [arr objectAtIndex:numOfIssue];
+
+		dicWeiboURL = [[NSDictionary alloc]initWithDictionary:[dicIssueInfo objectForKey:@"weiboURL"]];
+        kNumberOfPages = [[dic objectForKey:@"numOfPaages"] integerValue];
+        arrTag = [[NSMutableArray alloc]initWithCapacity:0];
+        for (NSInteger x = 0; x < kNumberOfPages; x++) {
+            [arrTag addObject:[NSNumber numberWithBool:NO]];
+        }
 //        self.imageViews = [[NSMutableArray alloc]initWithCapacity:0];
         
 		// in the meantime, load the array with placeholders which will be replaced on demand
@@ -132,7 +118,7 @@
         m_scrollView.userInteractionEnabled = YES;
         m_scrollView.alwaysBounceVertical = YES;
 
-		for (int i = 1; i <= kNumberOfPages; i++) {
+		for (NSInteger i = 1; i <= kNumberOfPages; i++) {
             
             
             
@@ -140,6 +126,8 @@
                 dispatch_async(dispatch_get_global_queue(0, 0), ^{
                         dispatch_async(dispatch_get_main_queue(), ^{
                             NSString *str = [NSString stringWithFormat:@"%@%iS",[dicData objectForKey:@"title"],i];
+//                            NSString *str = @"445";
+
                             NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
                             UIImage *image1 = [UIImage imageWithContentsOfFile:path];
                             UIImageView *image = [[UIImageView alloc]initWithImage:image1];
@@ -155,61 +143,117 @@
 		}
         
         
-        NSString *str = [NSString stringWithFormat:@"%@1",[dicData objectForKey:@"title"]];
-        NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
-        UIImage *image = [UIImage imageWithContentsOfFile:path];
+//        NSString *str = [NSString stringWithFormat:@"%@1",[dicData objectForKey:@"title"]];
+//        NSString *str = @"C5";
+//        NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+//        UIImage *image = [UIImage imageWithContentsOfFile:path];
+//        
+//       UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
+//
+//        image = nil;
+//        CGRect frame = m_scrollView.frame;
+//        frame.origin.x = 0;
+//        frame.origin.y = 0;
+//        bigImage.frame = frame;
+//        bigImage.tag = 1;
+//        [m_scrollView addSubview:bigImage];
+//        [bigImage release];
         
-       UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
-
-        image = nil;
-        CGRect frame = m_scrollView.frame;
-        frame.origin.x = 0;
-        frame.origin.y = 0;
-        bigImage.frame = frame;
-        bigImage.tag = 1;
-        [m_scrollView addSubview:bigImage];
-        [bigImage release];
+//        [self loadImage:1];
+//        [self loadImage:2];
     }
     return self;
 
 }
-
+- (void)remove:(NSNotification *)notification
+{
+    NSDictionary *dic = notification.userInfo;
+    NSInteger m_tag = [[dic objectForKey:@"column"] integerValue];
+    if (self.tag == m_tag) {
+//        NSLog(@"remove column %i",self.tag);
+        for (NSInteger i = 0; i < kNumberOfPages; i++) {
+            if ([[arrTag objectAtIndex:i] boolValue]) {
+                UIImageView *imageView = (UIImageView *)[m_scrollView viewWithTag:(i+1)];
+                [imageView removeFromSuperview];
+                [arrTag replaceObjectAtIndex:i withObject:[NSNumber numberWithBool:NO]];
+            }
+        }
+    }
+}
 - (void)move:(NSNotification *)notification
 {
     NSDictionary *dic = notification.userInfo;
-    NSInteger m_tag = [[dic objectForKey:@"tag"] integerValue];
+    NSInteger m_tag = [[dic objectForKey:@"column"] integerValue];
+//     && [[dic objectForKey:@"page"] integerValue] != 100
+    if ((self.tag == (m_tag-1) || self.tag == (m_tag+1))) {
+//        [self loadImage:page-1];
+        [self loadImage:page];
+//        [self loadImage:page+1];
+//        NSLog(@"column = %i ,page = %@",self.tag,arrTag);
+    }
     if (self.tag == m_tag) {
-        NSInteger m_page = [[dic objectForKey:@"page"] integerValue];
-        UIImageView *view =(UIImageView*)[m_scrollView viewWithTag:page];
-        [view removeFromSuperview];
-        CGFloat pageHeight = m_scrollView.frame.size.height;
-        
-        [m_scrollView setContentOffset:CGPointMake(0, m_scrollView.frame.size.height*(m_page - 1)) animated:NO];
-        
-        
-        page = floor((m_scrollView.contentOffset.y - pageHeight / 2) / pageHeight) + 2;
-        
-        NSString *str = [NSString stringWithFormat:@"%@%i",[dicData objectForKey:@"title"],page];
-        //    UIImage *image = [UIImage imageNamed:str];
-        
-        //    UIImage *image = [[UIImage alloc]initWithContentsOfFile:path];
-        //    UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
-        //    bigImage = [[UIImageView alloc]init];
-        NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
-        UIImage *image = [UIImage imageWithContentsOfFile:path];
-        UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
-        //    [image release];
-        image = nil;
-        CGRect frame = m_scrollView.frame;
-        frame.origin.x = 0;
-        frame.origin.y = frame.size.height * (page-1);
-        bigImage.frame = frame;
-        bigImage.tag = page;
-        [m_scrollView addSubview:bigImage];
-        //    [image release];
-        //    bigImage.image = nil;
-        [bigImage release];
+        nowPage = page;
+//        [m_scrollView setContentOffset:CGPointMake(0, m_scrollView.frame.size.height*(page - 1)) animated:YES];
 
+        if ([[dic objectForKey:@"page"] integerValue] != 100) {
+            page = [[dic objectForKey:@"page"] integerValue];
+
+            [self removeImage:nowPage-1];
+            [self removeImage:nowPage];
+            [self removeImage:nowPage+1];
+            
+            [self loadImage:page-1];
+            [self loadImage:page];
+            [self loadImage:page+1];
+//            NSLog(@"column = %i ,page = %@",self.tag,arrTag);
+
+        }else{
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self removeImage:nowPage-1];
+                    [self removeImage:nowPage];
+                    [self removeImage:nowPage+1];
+                    
+                    [self loadImage:page-1];
+                    [self loadImage:page];
+                    [self loadImage:page+1];
+//                    NSLog(@"column = %i ,page = %@",self.tag,arrTag);
+
+                });
+            });
+
+
+        }
+        [m_scrollView setContentOffset:CGPointMake(0, m_scrollView.frame.size.height*(page - 1)) animated:YES];
+
+
+//        nowPage = page;
+//        if ([[dic objectForKey:@"page"] integerValue] == 100) {
+//            [m_scrollView setContentOffset:CGPointMake(0, m_scrollView.frame.size.height*(page - 1)) animated:YES];
+//            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+//                dispatch_async(dispatch_get_main_queue(), ^{
+//                    [self loadImage:page-1];
+//                    [self loadImage:page];
+//                    [self loadImage:page+1];
+//                });
+//            });
+//        }else{
+//            page = [[dic objectForKey:@"page"] integerValue];
+//            [self removeImage:nowPage-1];
+//            [self removeImage:nowPage];
+//            [self removeImage:nowPage+1];
+//            
+//            [self loadImage:page-1];
+//            [self loadImage:page];
+//            [self loadImage:page+1];
+//            [m_scrollView setContentOffset:CGPointMake(0, m_scrollView.frame.size.height*(page - 1)) animated:YES];
+//        }
+
+        
+//        CGFloat pageHeight = m_scrollView.frame.size.height;
+//        page = floor((m_scrollView.contentOffset.y - pageHeight / 2) / pageHeight) + 2;
+        
+       
     }
     
 
@@ -219,32 +263,6 @@
 }
 
 
-//- (void)loadScrollViewWithPage:(int)m_page {
-//
-//    NSString *str = [NSString stringWithFormat:@"%@%i",[dicData objectForKey:@"title"],m_page];
-////    UIImage *image = [UIImage imageNamed:str];
-//    
-//    //    UIImage *image = [[UIImage alloc]initWithContentsOfFile:path];
-////    UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
-////    bigImage = [[UIImageView alloc]init];
-//    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
-//    UIImage *image = [UIImage imageWithContentsOfFile:path];
-//    bigImage = [[[UIImageView alloc]initWithImage:image] retain];
-////    bigImage.image = image;
-////    [image release];
-////    image = nil;
-//    CGRect frame = m_scrollView.frame;
-//    frame.origin.x = 0;
-//    frame.origin.y = frame.size.height * (m_page-1);
-//    bigImage.frame = frame;
-//    bigImage.tag = m_page;
-//    [m_scrollView addSubview:bigImage];
-////    [image release];
-//    [bigImage release];
-////    bigImage = nil;
-//
-//}
-//
 - (void)scrollViewDidScroll:(UIScrollView *)sender {
 }
 
@@ -259,54 +277,19 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 //- (void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
 {
-    UIImageView *view =(UIImageView*)[scrollView viewWithTag:page];
-//    NSLog(@"%i",view.retainCount);
-    [view removeFromSuperview];
-//        NSLog(@"%i",view.retainCount);
-//    [view release];
-//    NSLog(@"%i",view.retainCount);
 
-//    view.image = nil;
-
-//    if (bigImage) {
-////        bigImage.image = nil;
-//        [bigImage removeFromSuperview];
-////        [bigImage release];
-////        bigImage = nil;
-//    }
-//    [view release];
-
-    
-
-//    CGRect frame = m_scrollView.frame;
-//    frame.origin.x = 0;
-//    frame.origin.y = frame.size.height * (page-1);
-//
-//    MCImageViewWithPreview * imageView = [[MCImageViewWithPreview alloc] initWithFrame:frame];
-//    imageView.previewImageName = [NSString stringWithFormat:@"%@%iS.jpg",[dicData objectForKey:@"title"],page];
-//    imageView.imageName = [NSString stringWithFormat:@"%@%i.jpg",[dicData objectForKey:@"title"],page];
-//    imageView.tag = page;
-//    [m_scrollView addSubview:imageView];
-//    [imageView release];
+    nowPage = page;
     CGFloat pageHeight = scrollView.frame.size.height;
     page = floor((scrollView.contentOffset.y - pageHeight / 2) / pageHeight) + 2;
-    NSString *str = [NSString stringWithFormat:@"%@%i",[dicData objectForKey:@"title"],page];
-    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
-    UIImage *image = [UIImage imageWithContentsOfFile:path];
-   UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
-    //    [image release];
-    image = nil;
-    CGRect frame = m_scrollView.frame;
-    frame.origin.x = 0;
-    frame.origin.y = frame.size.height * (page-1);
-    bigImage.frame = frame;
-    bigImage.tag = page;
-    [m_scrollView addSubview:bigImage];
-    //    [image release];
-//    bigImage.image = nil;
-    [bigImage release];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"hidden" object:nil];
-//    [self loadScrollViewWithPage:page];
+
+    [self removeImage:nowPage-1];
+    [self removeImage:nowPage];
+    [self removeImage:nowPage+1];
+        
+    [self loadImage:page-1];
+    [self loadImage:page];
+    [self loadImage:page+1];
+//    NSLog(@"arrTag = %@",arrTag);
     
 }
 
@@ -319,14 +302,18 @@
 //        [obj removeFromSuperview];
 //    }
     [[NSNotificationCenter defaultCenter]removeObserver:self name:@"move" object:nil];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:@"removePage" object:nil];
+
     [m_scrollView release];
     m_scrollView = nil;
     [dicData release];
     dicData = nil;
-    [arrData release];
-    arrData = nil;
-//    [bigImage release];
-//    bigImage = nil;
+//    [arrData release];
+//    arrData = nil;
+    [arrTag release];
+    arrTag = nil;
+    [dicWeiboURL release];
+    dicWeiboURL = nil;
     [super dealloc];
 
 

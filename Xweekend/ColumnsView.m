@@ -19,7 +19,7 @@
 @implementation ColumnsView
 @synthesize m_delegate = _m_delegate;
 
-- (id)initWithFrame:(CGRect)frame withDic:(NSDictionary *)dicData delegate:(id)delegate
+- (id)initWithFrame:(CGRect)frame withDic:(NSDictionary *)dicData delegate:(id)delegate numOfIssue:(NSInteger)numOfIssue
 {
     if ((self = [super initWithFrame:frame])) {
         
@@ -35,14 +35,18 @@
         [self addSubview:m_ScrollView];
         
 		arrData = [[NSArray alloc]initWithArray:[dicData objectForKey:@"contentInfo"]];
-		int kNumberOfPages = [arrData count];
+        kNumberOfColumns = [arrData count];
+        arrTag = [[NSMutableArray alloc]initWithCapacity:0];
+        for (NSInteger x = 0; x<kNumberOfColumns; x++) {
+            [arrTag addObject:[NSNumber numberWithBool:NO]];
+        }
 //        self.imageViews = [[NSMutableArray alloc]initWithCapacity:0];
         
 		// in the meantime, load the array with placeholders which will be replaced on demand
         //
 		// a page is the width of the scroll view
 		m_ScrollView.pagingEnabled = YES;
-		m_ScrollView.contentSize = CGSizeMake(m_ScrollView.frame.size.width * kNumberOfPages, m_ScrollView.frame.size.height);
+		m_ScrollView.contentSize = CGSizeMake(m_ScrollView.frame.size.width * kNumberOfColumns, m_ScrollView.frame.size.height);
 		m_ScrollView.showsHorizontalScrollIndicator = NO;
 		m_ScrollView.showsVerticalScrollIndicator = NO;
 		m_ScrollView.scrollsToTop = NO;
@@ -55,12 +59,15 @@
         UITapGestureRecognizer *singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
         [singleTap setNumberOfTapsRequired:1];
         [m_ScrollView addGestureRecognizer:singleTap];
+        singleTap.cancelsTouchesInView = NO;
+        singleTap.delegate = self;
+
         [singleTap release];
 		// pages are created on demand
 		// load the visible page
 		// load the page on either side to avoid flashes when the user starts scrolling
         thumbnailScrollView = [[UIScrollView alloc]initWithFrame:CGRectMake(0, 1024, 768, 256)];
-		thumbnailScrollView.contentSize = CGSizeMake(192 * kNumberOfPages, thumbnailScrollView.frame.size.height);
+		thumbnailScrollView.contentSize = CGSizeMake(192 * kNumberOfColumns, thumbnailScrollView.frame.size.height);
         thumbnailScrollView.showsHorizontalScrollIndicator = NO;
         thumbnailScrollView.showsVerticalScrollIndicator = NO;
         thumbnailScrollView.scrollsToTop = NO;
@@ -71,32 +78,12 @@
         [self addSubview:thumbnailScrollView];
         isThumbnailShow = NO;
         
-//        NSString *path = [[NSBundle mainBundle] pathForResource:@"issues" ofType:@"plist"];
-//        NSArray *arrIssuesPlist = [[NSArray alloc]initWithContentsOfFile:path];
-//        NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:0];
-//        NSArray *contentInfo = [dicIssueInfo objectForKey:@"contentInfo"];
         
-//        klp = [[klpView alloc]initWithFrame:CGRectMake(0, 0, 192, 256)];
-//        [thumbnailScrollView addSubview:klp];
-        
-        
-//        NSMutableArray *arrData = [[NSMutableArray alloc]initWithCapacity:0];
-//        for (NSDictionary *dic in contentInfo) {
-//            NSMutableArray *arr = [[NSMutableArray alloc]initWithCapacity:0];
-//            NSString *str = [dic objectForKey:@"numOfPaages"];
-//            int sum = [str intValue];
-//            for (int i = 1; i <= sum; i++) {
-//                [arr addObject:[NSString stringWithFormat:@"%@%is.jpg",[dic objectForKey:@"title"],i]];
-//            }
-//            [arrData addObject:arr];
-//        }
-
-        
-		for (unsigned i = 0; i < kNumberOfPages; i++) {
+		for (NSInteger i = 0; i < kNumberOfColumns; i++) {
 //            dispatch_async(dispatch_get_global_queue(0, 0), ^{
 
                 pagePhotosView = nil;
-                pagePhotosView = [[PagePhotosView alloc]initWithFrame:self.bounds withDic:[arrData objectAtIndex:i]];
+                pagePhotosView = [[PagePhotosView alloc]initWithFrame:self.bounds withDic:[arrData objectAtIndex:i] numOfIssue:numOfIssue];
                 CGRect frame = m_ScrollView.frame;
                 frame.origin.x = frame.size.width * i;
                 frame.origin.y = 0;
@@ -118,26 +105,29 @@
                 NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
                 UIImage *image = [UIImage imageWithContentsOfFile:path];
 
-                
-                
-                
-    //            UIImageView *imgView = [[UIImageView alloc]initWithImage:image];
-    //            imgView.frame = CGRectMake(0, 0, 192, 256);
                 [bt setBackgroundImage:image forState:UIControlStateNormal];
                 [thumbnailScrollView addSubview:bt];
-//            });
-//            imgView.image = nil;
-//            [imgView release];
-//            [self.imageViews addObject:[NSNumber numberWithBool:YES]];
+
 		}
-        
-//        		[self loadScrollViewWithPage:0];
+        NSDictionary *dic = [[NSDictionary alloc]initWithObjectsAndKeys:[NSNumber numberWithInteger:1],@"column", [NSNumber numberWithInteger:1],@"page",nil];
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"move" object:nil userInfo:dic];
+        [dic release];
         
         
 		
     }
     return self;
 
+}
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+    // 过滤掉UIButton，也可以是其他类型
+    if ( [touch.view isKindOfClass:[UIButton class]])
+    {
+        return NO;
+    }
+    
+    return YES;
 }
 
 - (void)hidden:(NSNotification *)notification
@@ -163,12 +153,13 @@
 
 - (void)move:(NSNotification *)notification
 {
+    nowColumn = page;
     NSDictionary *dic = notification.userInfo;
 //    NSLog(@"%@",dic);
     NSInteger column = [[dic objectForKey:@"column"] integerValue];
     NSInteger m_page = [[dic objectForKey:@"page"] integerValue];
+    [self removeColums:[NSNumber numberWithInteger:column]];
     [self.m_delegate turnToPage:column];
-
     CGPoint point = CGPointMake(192*(column-1), 0);
     if (point.x >= (thumbnailScrollView.contentSize.width - 192*4)) {
         point = CGPointMake(thumbnailScrollView.contentSize.width - 192*4, 0);
@@ -186,18 +177,20 @@
     
     [m_ScrollView setContentOffset:CGPointMake(768*(column- 1), 0) animated:NO];
     
-    NSDictionary *dicUserInfo = [[NSDictionary alloc]initWithObjectsAndKeys:[NSNumber numberWithInteger:m_page],@"page",[NSNumber numberWithInteger:column],@"tag", nil];
+    NSDictionary *dicUserInfo = [[NSDictionary alloc]initWithObjectsAndKeys:[NSNumber numberWithInteger:m_page],@"page",[NSNumber numberWithInteger:column],@"column", nil];
     [[NSNotificationCenter defaultCenter]postNotificationName:@"move" object:nil userInfo:dicUserInfo];
     [dicUserInfo release];
 //    PagePhotosView *view = (PagePhotosView *)[m_ScrollView viewWithTag:column];
 //    [view move:m_page];
-    [self.m_delegate Hidden];
+//    [self.m_delegate Hidden];
     thumbnailScrollView.frame = CGRectMake(0, 1024, 768, 256);
     isThumbnailShow = NO;
+    page = column;
 }
 
 - (void)click:(id)sender
 {
+    nowColumn = page;
     UIButton *bt = sender;
     [m_ScrollView setContentOffset:CGPointMake(bt.frame.origin.x*4, 0) animated:YES];
     CGPoint point = CGPointMake(bt.frame.origin.x, 0);
@@ -212,19 +205,43 @@
 //        klp.alpha = 0.85;
 //    }];
     [thumbnailScrollView setContentOffset:point animated:YES];
+    NSDictionary *dicUserInfo = [[NSDictionary alloc]initWithObjectsAndKeys:[NSNumber numberWithInteger:100],@"page",[NSNumber numberWithInteger:page],@"column", nil];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"move" object:nil userInfo:dicUserInfo];
+    [dicUserInfo release];
+    [self performSelector:@selector(removeColums:) withObject:[NSNumber numberWithInteger:page] afterDelay:0.1f];
+//    [self removeColums:page];
+
 
 }
 
 
 
-- (void)loadScrollViewWithPage:(int)page
+
+
+- (void)loadColumn:(NSInteger)m_column
 {
 
 }
 
-- (void)loadBigImage:(int)page
+- (void)removeColums:(NSNumber *)column
 {
-    
+    NSInteger m_column= [column integerValue];
+    if (nowColumn != m_column && nowColumn != (m_column-1) && nowColumn != (m_column+1)) {
+        NSDictionary *dic = [[NSDictionary alloc]initWithObjectsAndKeys:[NSNumber numberWithInteger:nowColumn], @"column", nil];
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"removePage" object:nil userInfo:dic];
+        [dic release];
+    }
+    if ((nowColumn-1) != m_column && (nowColumn-1) != (m_column-1) && (nowColumn-1) != (m_column+1)) {
+        NSDictionary *dic = [[NSDictionary alloc]initWithObjectsAndKeys:[NSNumber numberWithInteger:nowColumn-1], @"column", nil];
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"removePage" object:nil userInfo:dic];
+        [dic release];
+    }
+    if ((nowColumn+1) != m_column && (nowColumn+1) != (m_column-1) && (nowColumn+1) != (m_column+1)) {
+        NSDictionary *dic = [[NSDictionary alloc]initWithObjectsAndKeys:[NSNumber numberWithInteger:nowColumn+1], @"column", nil];
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"removePage" object:nil userInfo:dic];
+        [dic release];
+    }
+
 }
 
 
@@ -248,14 +265,15 @@
     
 
     if (scrollView == m_ScrollView) {
-        CGFloat pageWidth = scrollView.frame.size.width;
-        int index = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth);
-        page = index + 1;
+        nowColumn = page;
+                CGFloat pageWidth = scrollView.frame.size.width;
+        NSInteger index = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth);
+        page = index + 2;
 //        NSLog(@"%i",page);
+        [self removeColums:[NSNumber numberWithInteger:page]];
+        [self.m_delegate turnToPage:page];
         
-        [self.m_delegate turnToPage:(page + 1)];
-        
-        CGPoint point = CGPointMake(192*(page), 0);
+        CGPoint point = CGPointMake(192*(page-1), 0);
         if (point.x >= (thumbnailScrollView.contentSize.width - 192*4)) {
             point = CGPointMake(thumbnailScrollView.contentSize.width - 192*4, 0);
         }
@@ -282,6 +300,9 @@
             [self.m_delegate Hidden];
         }
         [thumbnailScrollView setContentOffset:point animated:NO];
+        NSDictionary *dicUserInfo = [[NSDictionary alloc]initWithObjectsAndKeys:[NSNumber numberWithInteger:100],@"page",[NSNumber numberWithInteger:page],@"column", nil];
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"move" object:nil userInfo:dicUserInfo];
+        [dicUserInfo release];
 
 
     }
