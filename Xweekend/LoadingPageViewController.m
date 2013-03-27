@@ -32,9 +32,15 @@
     if (1) {
         startLoge = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"startLog.jpg"]];
         startLoge.frame = self.view.bounds;
-        
+//        startLoge.alpha = 0;
         [self.view addSubview:startLoge];
-        
+        NSLog(@"loged!");
+//        [UIView beginAnimations: nil context: nil];
+//        [UIView setAnimationDuration: 0.3f];
+//        [UIView setAnimationDelegate: self];
+//        startLoge.alpha = 1.0;
+//        [UIView commitAnimations];
+
         timer = [NSTimer scheduledTimerWithTimeInterval: 3.0
                                                  target: self
                                                selector: @selector(fadeScreen)
@@ -49,23 +55,32 @@
 
 - (void) fadeScreen
 {
-	[UIView beginAnimations: nil context: nil];
+//	[UIView beginAnimations: nil context: nil];
+//	[UIView setAnimationDuration: 0.3f];
+//	[UIView setAnimationDelegate: self];
+//	[UIView setAnimationDidStopSelector: @selector(finishedFading)];
+//	startLoge.alpha = 1.0;
+//	[UIView commitAnimations];
+    [UIView beginAnimations: nil context: nil];
 	[UIView setAnimationDuration: 0.5f];
-	[UIView setAnimationDelegate: self];
-	[UIView setAnimationDidStopSelector: @selector(finishedFading)];
-	self.view.alpha = 0.0;
+	startLoge.alpha = 0.0;
+    [UIView setAnimationDidStopSelector: @selector(finishedFading)];
 	[UIView commitAnimations];
+	    
+    [self showMain];
 }
 
 - (void) finishedFading
 {
-	[UIView beginAnimations: nil context: nil];
-	[UIView setAnimationDuration: 0.5f];
-	self.view.alpha = 1.0;
-	[UIView commitAnimations];
-	[startLoge removeFromSuperview];
-    
-    [self showMain];
+    [startLoge removeFromSuperview];
+
+//	[UIView beginAnimations: nil context: nil];
+//	[UIView setAnimationDuration: 0.5f];
+//	startLoge.alpha = 0.0;
+//	[UIView commitAnimations];
+//	[startLoge removeFromSuperview];
+//    
+//    [self showMain];
 }
 
 
