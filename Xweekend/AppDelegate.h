@@ -23,18 +23,24 @@
 #error
 #endif
 
-@class ViewController;
+//@class ViewController;
+@class LoadingPageViewController;
 @class SinaWeibo;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>{
-    UINavigationController *nav;
-    ViewController *viewController;
+//    UINavigationController *nav;
+//    ViewController *viewController;
+//    LoadingPageViewController *loadingPageViewController;
+//    NSTimer *timer;
+//    UIImageView *startLoge;
+
 
 }
 
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) SinaWeibo *sinaweibo;
-
+@property (strong, nonatomic) LoadingPageViewController *loadingPageViewController;
 //@property (strong, nonatomic) ViewController *viewController;
+
 
 @end

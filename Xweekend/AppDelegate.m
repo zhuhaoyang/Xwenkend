@@ -9,11 +9,12 @@
 #import "AppDelegate.h"
 
 #import "ViewController.h"
+#import "LoadingPageViewController.h"
 #import "SinaWeibo.h"
 
 
 @implementation AppDelegate
-@synthesize sinaweibo = _sinaweibo;
+//@synthesize sinaweibo = _sinaweibo;
 //@synthesize viewController = _viewController;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -21,13 +22,14 @@
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
-    nav = [[UINavigationController alloc]initWithRootViewController:viewController];
-    [nav.navigationBar setBackgroundImage:[UIImage imageNamed:@"banner"] forBarMetrics:UIBarMetricsDefault];
-    self.window.rootViewController = nav;
+    self.loadingPageViewController = [[LoadingPageViewController alloc] initWithNibName:@"LoadingPageViewController" bundle:nil];
+    NSLog(@"%@",self.loadingPageViewController.view);
+//    nav = [[UINavigationController alloc]initWithRootViewController:viewController];
+//    [nav.navigationBar setBackgroundImage:[UIImage imageNamed:@"banner"] forBarMetrics:UIBarMetricsDefault];
+    self.window.rootViewController = self.loadingPageViewController;
     [self.window makeKeyAndVisible];
     
-    self.sinaweibo = [[SinaWeibo alloc] initWithAppKey:kAppKey appSecret:kAppSecret appRedirectURI:kAppRedirectURI andDelegate:viewController];
+    self.sinaweibo = [[SinaWeibo alloc] initWithAppKey:kAppKey appSecret:kAppSecret appRedirectURI:kAppRedirectURI andDelegate:self.loadingPageViewController];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *sinaweiboInfo = [defaults objectForKey:@"SinaWeiboAuthData"];
     if ([sinaweiboInfo objectForKey:@"AccessTokenKey"] && [sinaweiboInfo objectForKey:@"ExpirationDateKey"] && [sinaweiboInfo objectForKey:@"UserIDKey"])

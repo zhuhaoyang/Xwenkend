@@ -17,6 +17,8 @@
     NSArray *arrIssuesPlist;
     NSUInteger numOfRows;
     MBProgressHUD *m_hud;
+    UIImageView *testImageView;
 }
+@property(nonatomic,retain)UIImageView *testImageView;
 
 @end

@@ -25,6 +25,7 @@
     NSInteger nowPage;
     NSMutableArray *arrTag;
     NSDictionary *dicWeiboURL;
+    NSDictionary *dicCopyrightPage;
 }
 
 //@property (nonatomic, strong) NSMutableArray *imageViews;

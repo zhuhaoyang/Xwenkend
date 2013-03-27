@@ -13,7 +13,15 @@
 @end
 
 @implementation ViewController
-
+@synthesize testImageView = _testImageView;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -38,15 +46,20 @@
 
     
 //    btRead = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    btRead.frame = CGRectMake(100, 100, 100, 50);
+//    btRead.frame = CGRectMake(0, 0, 100, 50);
 //    [btRead setTitle:@"阅读" forState:UIControlStateNormal];
 //    [btRead addTarget:self action:@selector(test) forControlEvents:UIControlEventTouchUpInside];
 //    [self.view addSubview:btRead];
+    
+//    self.testImageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"P1S.jpg"]];
+//    self.testImageView.frame = CGRectMake(100, 100, 320, 480);
+//    [self.view addSubview:self.testImageView];
 }
 
 //- (void)test
 //{
 //    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://weibo.com/u/1760807974"]];
+//    self.testImageView.frame = CGRectMake(100, 100, 1280, 1024);
 //}
 
 
