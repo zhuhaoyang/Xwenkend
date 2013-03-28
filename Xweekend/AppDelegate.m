@@ -23,14 +23,17 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor blackColor];
-    [self.window makeKeyAndVisible];
-
+    [[UIApplication sharedApplication]setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
     self.loadingPageViewController = [[LoadingPageViewController alloc] initWithNibName:@"LoadingPageViewController" bundle:nil];
+    
     NSLog(@"232323232%@",self.loadingPageViewController.view);
 //    nav = [[UINavigationController alloc]initWithRootViewController:viewController];
 //    [nav.navigationBar setBackgroundImage:[UIImage imageNamed:@"banner"] forBarMetrics:UIBarMetricsDefault];
     self.window.rootViewController = self.loadingPageViewController;
-    
+
+    [self.window makeKeyAndVisible];
+    [[UIApplication sharedApplication]setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+
     self.sinaweibo = [[SinaWeibo alloc] initWithAppKey:kAppKey appSecret:kAppSecret appRedirectURI:kAppRedirectURI andDelegate:self.loadingPageViewController];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSDictionary *sinaweiboInfo = [defaults objectForKey:@"SinaWeiboAuthData"];
