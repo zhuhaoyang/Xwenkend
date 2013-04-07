@@ -15,13 +15,13 @@
 
 @implementation ThumbnailViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil numOfIssue:(NSInteger)num
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
         
-       
+        numOfIssue = num;
     }
     return self;
 }
@@ -92,9 +92,20 @@
 		for (NSInteger page = 1; page <= numOfPaages; page++) {
 
 
-            NSString *str = [NSString stringWithFormat:@"%@%iS",[dic objectForKey:@"title"],page];
-            NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+
+            
+            
+            Publisher *publisher = [Publisher sharedPublisher];
+            NKLibrary *nkLib = [NKLibrary sharedLibrary];
+            NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:numOfIssue]];
+            
+            NSString *str = [NSString stringWithFormat:@"%@%iS.jpg",[dic objectForKey:@"title"],page];
+            //    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+            NSString *path = [[nkIssue.contentURL path] stringByAppendingPathComponent:str];
             UIImage *image1 = [UIImage imageWithContentsOfFile:path];
+            
+
+            
             btThumbnai *image = [btThumbnai buttonWithType:UIButtonTypeCustom];
             [image setObject:[NSNumber numberWithInteger:column+1] forKey:@"column"];
             [image setObject:[NSNumber numberWithInteger:page] forKey:@"page"];
@@ -161,9 +172,20 @@
             for (NSInteger page = 1; page <= numOfPaages; page++) {
                 
                 
-                NSString *str = [NSString stringWithFormat:@"%@%iS",[dic objectForKey:@"title"],page];
-                NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+                Publisher *publisher = [Publisher sharedPublisher];
+                NKLibrary *nkLib = [NKLibrary sharedLibrary];
+                NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:numOfIssue]];
+                
+                NSString *str = [NSString stringWithFormat:@"%@%iS.jpg",[dic objectForKey:@"title"],page];
+                //    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+                NSString *path = [[nkIssue.contentURL path] stringByAppendingPathComponent:str];
                 UIImage *image1 = [UIImage imageWithContentsOfFile:path];
+
+                
+                
+//                NSString *str = [NSString stringWithFormat:@"%@%iS",[dic objectForKey:@"title"],page];
+//                NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+//                UIImage *image1 = [UIImage imageWithContentsOfFile:path];
                 btThumbnai *image = [btThumbnai buttonWithType:UIButtonTypeCustom];
                 [image setObject:[NSNumber numberWithInteger:offSet+1] forKey:@"column"];
                 [image setObject:[NSNumber numberWithInteger:page] forKey:@"page"];

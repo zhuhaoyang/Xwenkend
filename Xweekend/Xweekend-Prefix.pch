@@ -11,4 +11,25 @@
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
+    #import <StoreKit/StoreKit.h>
 #endif
+
+// Shorthand for getting localized strings, used in formats below for readability
+#define LocStr(key) [[NSBundle mainBundle] localizedStringForKey:(key) value:@"" table:nil]
+
+
+// User sub-dirs
+#define DocumentsDirectory [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, \
+NSUserDomainMask, YES) objectAtIndex:0]
+
+#define LibraryDirectory [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, \
+NSUserDomainMask, YES) objectAtIndex:0]
+
+#define DocumentsSubDirectory(dir) [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, \
+NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingString:dir]
+
+#define LibrarySubDirectory(dir) [[NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, \
+NSUserDomainMask, YES) objectAtIndex:0] stringByAppendingString:dir]
+
+#define CacheDirectory [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0]
+

@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "PagePhotosView.h"
+#import "Publisher.h"
+
 @protocol ColumnsDelegate;
 
 @interface ColumnsView : UIView

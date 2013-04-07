@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 #import "btVisitWeibo.h"
+#import "Publisher.h"
+
 //#import "MCImageViewWithPreview.h"
 
 
@@ -26,10 +28,11 @@
     NSMutableArray *arrTag;
     NSDictionary *dicWeiboURL;
     NSDictionary *dicCopyrightPage;
+    NSInteger numOfIssue;
 }
 
 //@property (nonatomic, strong) NSMutableArray *imageViews;
-- (id)initWithFrame:(CGRect)frame withDic:(NSDictionary *)dic numOfIssue:(NSInteger)numOfIssue;
+- (id)initWithFrame:(CGRect)frame withDic:(NSDictionary *)dic numOfIssue:(NSInteger)num;
 - (void)loadImage:(NSInteger)m_page;
 - (void)removeImage:(NSInteger)m_page;
 //- (void)move:(NSInteger)m_page;

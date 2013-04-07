@@ -199,12 +199,14 @@
 			</dict>
 		</array>
 		<key>contentUrl</key>
-		<string>http://www.viggiosoft.com/media/data/blog/newsstand/magazine-0.zip</string>
+		<string>http://xpress.tingso.com.cache.srt.cn:8088/pub/20130402/issue1.zip</string>
 		<key>cover</key>
-		<string>coverpreview.png</string>
+		<string>http://xpress.tingso.com.cache.srt.cn:8088/pub/20130402/coverpreview.png</string>
 		<key>date</key>
-		<string>2013年1月1号</string>
+		<date>2013-04-02T05:14:41Z</date>
 		<key>issueId</key>
+		<string>201301</string>
+		<key>name</key>
 		<string>201301</string>
 		<key>title</key>
 		<string>行报2013年1月刊</string>

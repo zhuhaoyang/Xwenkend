@@ -15,6 +15,7 @@
 #import "SinaWeibo.h"
 #import "SinaWeiboRequest.h"
 #import "AppDelegate.h"
+#import <NewsstandKit/NewsstandKit.h>
 
 @interface ReadViewController : UIViewController
 <ColumnsDelegate,UITextViewDelegate,
@@ -23,6 +24,7 @@ UITableViewDataSource,UITableViewDelegate>{
     BOOL isflage;
     ColumnsView *m_ColumnsView;
     NSArray *arrIssuesPlist;
+    NSDictionary *dicIssueInfo;
     ThumbnailViewController *thumbnailView;
     BOOL isShow;
     MBProgressHUD *m_hud;
@@ -33,5 +35,5 @@ UITableViewDataSource,UITableViewDelegate>{
     NSInteger m_NumOfIssue;
 }
 //@property (nonatomic,assign) NSInteger 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil numOfIssues:(NSString *)numOfIssues;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil dic:(NSDictionary *)dic numOfIssues:(NSString *)numOfIssues;
 @end

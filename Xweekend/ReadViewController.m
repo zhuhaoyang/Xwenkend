@@ -28,11 +28,12 @@
 
 @implementation ReadViewController
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil numOfIssues:(NSString *)numOfIssues
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil dic:(NSDictionary *)dic numOfIssues:(NSString *)numOfIssues
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        dicIssueInfo = [[NSDictionary alloc]initWithDictionary:dic];
         m_Column = 1;
         m_NumOfIssue = [numOfIssues integerValue] - 1;
         NSLog(@"%i",m_NumOfIssue);
@@ -170,7 +171,7 @@
     SinaWeibo *sinaweibo = [self sinaweibo];
     if ([sinaweibo isAuthValid]) {
         
-        NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[[[arrIssuesPlist objectAtIndex:m_NumOfIssue]objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
+        NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
         [sinaweibo requestWithURL:@"statuses/upload.json"
                            params:[NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    textView.text, @"status",
@@ -195,7 +196,7 @@
 - (void)turnToPage:(NSInteger)column
 {
     m_Column = column;
-    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:m_NumOfIssue];
+//    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:m_NumOfIssue];
     textView.text = [NSString stringWithFormat:@"推荐栏目%@",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
 
 //    NSLog(@"%i",m_Column);
@@ -204,7 +205,7 @@
 - (void)showThumbnail
 {
     if (thumbnailView == nil) {
-        thumbnailView = [[ThumbnailViewController alloc]initWithNibName:@"ThumbnailViewController" bundle:[NSBundle mainBundle]];
+        thumbnailView = [[ThumbnailViewController alloc]initWithNibName:@"ThumbnailViewController" bundle:[NSBundle mainBundle] numOfIssue:m_NumOfIssue];
         thumbnailView.view.frame = CGRectMake(0, 1024, 768, 960);
         [self.view addSubview:thumbnailView.view];
     }
@@ -266,9 +267,9 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"issues" ofType:@"plist"];
-    arrIssuesPlist = [[NSArray alloc]initWithContentsOfFile:path];
-    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:m_NumOfIssue];
+//    NSString *path = [[NSBundle mainBundle] pathForResource:@"issues" ofType:@"plist"];
+//    arrIssuesPlist = [[NSArray alloc]initWithContentsOfFile:path];
+//    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:m_NumOfIssue];
     m_ColumnsView = nil;
     m_ColumnsView = [[ColumnsView alloc]initWithFrame:self.view.bounds withDic:dicIssueInfo delegate:self numOfIssue:m_NumOfIssue];
     [self.view addSubview:m_ColumnsView];
@@ -295,8 +296,10 @@
     thumbnailView = nil;
     [m_ColumnsView release];
     m_ColumnsView = nil;
-    [arrIssuesPlist release];
-    arrIssuesPlist = nil;
+//    [arrIssuesPlist release];
+//    arrIssuesPlist = nil;
+    [dicIssueInfo release];
+    dicIssueInfo = nil;
     [textView release];
     textView = nil;
     [backGround release];
@@ -373,7 +376,7 @@
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     
 
-    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:m_NumOfIssue];
+//    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:m_NumOfIssue];
     textView.text = [NSString stringWithFormat:@"推荐栏目%@",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
     [cell addSubview:textView];
     [textView becomeFirstResponder];
@@ -393,7 +396,7 @@
     if ([sinaweibo isAuthValid]) {
         
         
-        NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[[[arrIssuesPlist objectAtIndex:m_NumOfIssue]objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
+        NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
         [sinaweibo requestWithURL:@"statuses/upload.json"
                            params:[NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    textView.text, @"status",

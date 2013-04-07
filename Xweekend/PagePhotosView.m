@@ -36,8 +36,14 @@
         return;
     }
 //    NSString *str = @"999";
-    NSString *str = [NSString stringWithFormat:@"%@%i",[dicData objectForKey:@"title"],m_page];
-    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+    
+    Publisher *publisher = [Publisher sharedPublisher];
+    NKLibrary *nkLib = [NKLibrary sharedLibrary];
+    NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:numOfIssue]];
+
+    NSString *str = [NSString stringWithFormat:@"%@%i.jpg",[dicData objectForKey:@"title"],m_page];
+//    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+    NSString *path = [[nkIssue.contentURL path] stringByAppendingPathComponent:str];
     UIImage *image = [UIImage imageWithContentsOfFile:path];
     
     UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
@@ -75,12 +81,12 @@
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:bt.url]];
 }
 
-- (id)initWithFrame:(CGRect)frame withDic:(NSDictionary *)dic numOfIssue:(NSInteger)numOfIssue
+- (id)initWithFrame:(CGRect)frame withDic:(NSDictionary *)dic numOfIssue:(NSInteger)num
 {
     if ((self = [super initWithFrame:frame])) {
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(move:) name:@"move" object:nil];
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(remove:) name:@"removePage" object:nil];
-
+        numOfIssue = num;
         page = 1;
         dicData = [[NSDictionary alloc]initWithDictionary:dic];
 
@@ -124,11 +130,16 @@
            
                 dispatch_async(dispatch_get_global_queue(0, 0), ^{
                         dispatch_async(dispatch_get_main_queue(), ^{
-                            NSString *str = [NSString stringWithFormat:@"%@%iS",[dicData objectForKey:@"title"],i];
-//                            NSString *str = @"445";
-
-                            NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+                            Publisher *publisher = [Publisher sharedPublisher];
+                            NKLibrary *nkLib = [NKLibrary sharedLibrary];
+                            NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:numOfIssue]];
+                            
+                            NSString *str = [NSString stringWithFormat:@"%@%iS.jpg",[dicData objectForKey:@"title"],i];
+                            //    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+                            NSString *path = [[nkIssue.contentURL path] stringByAppendingPathComponent:str];
                             UIImage *image1 = [UIImage imageWithContentsOfFile:path];
+
+                            
                             UIImageView *image = [[UIImageView alloc]initWithImage:image1];
                             CGRect frame = m_scrollView.frame;
                             frame.origin.x = 0;

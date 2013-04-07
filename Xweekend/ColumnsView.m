@@ -99,12 +99,24 @@
                 bt.frame = CGRectMake(i*192, 0, 192, 256);
                 [bt addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
                 
-                NSString *str = [NSString stringWithFormat:@"COVER%@",[[arrData objectAtIndex:i] objectForKey:@"title"]];
+//                NSString *str = [NSString stringWithFormat:@"COVER%@",[[arrData objectAtIndex:i] objectForKey:@"title"]];
                 //    UIImage *image = [UIImage imageNamed:str];
                 
-                NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+//                NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+//                UIImage *image = [UIImage imageWithContentsOfFile:path];
+
+            
+                Publisher *publisher = [Publisher sharedPublisher];
+                NKLibrary *nkLib = [NKLibrary sharedLibrary];
+                NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:numOfIssue]];
+                
+                NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[arrData objectAtIndex:i] objectForKey:@"title"]];
+                //    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+                NSString *path = [[nkIssue.contentURL path] stringByAppendingPathComponent:str];
                 UIImage *image = [UIImage imageWithContentsOfFile:path];
 
+            
+            
                 [bt setBackgroundImage:image forState:UIControlStateNormal];
                 [thumbnailScrollView addSubview:bt];
 

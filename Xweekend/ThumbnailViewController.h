@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "btThumbnai.h"
+#import "Publisher.h"
 
 @interface ThumbnailViewController : UIViewController
 <UIScrollViewDelegate>{
@@ -15,6 +16,8 @@
     NSArray *arrThumbnailInfo;
     NSInteger max;
     NSMutableArray *arrTag;
-
+    NSInteger numOfIssue;
 }
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil numOfIssue:(NSInteger)num;
 @end

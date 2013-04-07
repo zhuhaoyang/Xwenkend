@@ -9,15 +9,25 @@
 #import <UIKit/UIKit.h>
 #import "ReadViewController.h"
 #import "MBProgressHUD.h"
+#import "Publisher.h"
+#import <NewsstandKit/NewsstandKit.h>
+//#import "ZipArchive.h"
 @interface ViewController : UIViewController
-<UITableViewDataSource,UITableViewDelegate>{
+<UITableViewDataSource,UITableViewDelegate,NSURLConnectionDownloadDelegate,
+SKRequestDelegate,SKProductsRequestDelegate,SKPaymentTransactionObserver,NSURLConnectionDelegate>{
     UITableView *m_tableView;
     UIButton *btRead;
     ReadViewController *m_ReadViewController;
-    NSArray *arrIssuesPlist;
+//    NSArray *arrIssuesPlist;
     NSUInteger numOfRows;
     MBProgressHUD *m_hud;
     UIImageView *testImageView;
+    Publisher *publisher;
+    UIBarButtonItem *editButton;
+    UIBarButtonItem *waitButton;
+    UIBarButtonItem *refreshButton;
+    UIView *backView;
+    BOOL isEdit;
 }
 @property(nonatomic,retain)UIImageView *testImageView;
 
