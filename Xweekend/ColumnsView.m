@@ -81,44 +81,45 @@
         
 		for (NSInteger i = 0; i < kNumberOfColumns; i++) {
 //            dispatch_async(dispatch_get_global_queue(0, 0), ^{
-
-                pagePhotosView = nil;
-                pagePhotosView = [[PagePhotosView alloc]initWithFrame:self.bounds withDic:[arrData objectAtIndex:i] numOfIssue:numOfIssue];
-                CGRect frame = m_ScrollView.frame;
-                frame.origin.x = frame.size.width * i;
-                frame.origin.y = 0;
-                pagePhotosView.frame = frame;
-                pagePhotosView.tag = i+1;
-                [m_ScrollView addSubview:pagePhotosView];
-                
-    //            [pagePhotosView loadImage:[arrData objectAtIndex:i]];
-                [pagePhotosView release];
-                
-                UIButton *bt = [UIButton buttonWithType:UIButtonTypeCustom];
-    //            [bt setBackgroundImage:[UIImage imageNamed:[[arrData objectAtIndex:i] objectAtIndex:0]] forState:UIControlStateNormal];
-                bt.frame = CGRectMake(i*192, 0, 192, 256);
-                [bt addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
-                
+            NSDictionary *dic = [[NSDictionary alloc]initWithDictionary:[arrData objectAtIndex:i]];
+            pagePhotosView = nil;
+            pagePhotosView = [[PagePhotosView alloc]initWithFrame:self.bounds withDic:dic numOfIssue:numOfIssue];
+            [dic release];
+            CGRect frame = m_ScrollView.frame;
+            frame.origin.x = frame.size.width * i;
+            frame.origin.y = 0;
+            pagePhotosView.frame = frame;
+            pagePhotosView.tag = i+1;
+            [m_ScrollView addSubview:pagePhotosView];
+            
+//            [pagePhotosView loadImage:[arrData objectAtIndex:i]];
+            [pagePhotosView release];
+            
+            UIButton *bt = [UIButton buttonWithType:UIButtonTypeCustom];
+//            [bt setBackgroundImage:[UIImage imageNamed:[[arrData objectAtIndex:i] objectAtIndex:0]] forState:UIControlStateNormal];
+            bt.frame = CGRectMake(i*192, 0, 192, 256);
+            [bt addTarget:self action:@selector(click:) forControlEvents:UIControlEventTouchUpInside];
+            
 //                NSString *str = [NSString stringWithFormat:@"COVER%@",[[arrData objectAtIndex:i] objectForKey:@"title"]];
-                //    UIImage *image = [UIImage imageNamed:str];
-                
+            //    UIImage *image = [UIImage imageNamed:str];
+            
 //                NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
 //                UIImage *image = [UIImage imageWithContentsOfFile:path];
 
+        
+            Publisher *publisher = [Publisher sharedPublisher];
+            NKLibrary *nkLib = [NKLibrary sharedLibrary];
+            NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:numOfIssue]];
             
-                Publisher *publisher = [Publisher sharedPublisher];
-                NKLibrary *nkLib = [NKLibrary sharedLibrary];
-                NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:numOfIssue]];
-                
-                NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[arrData objectAtIndex:i] objectForKey:@"title"]];
-                //    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
-                NSString *path = [[nkIssue.contentURL path] stringByAppendingPathComponent:str];
-                UIImage *image = [UIImage imageWithContentsOfFile:path];
+            NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[arrData objectAtIndex:i] objectForKey:@"title"]];
+            //    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
+            NSString *path = [[nkIssue.contentURL path] stringByAppendingPathComponent:str];
+            UIImage *image = [UIImage imageWithContentsOfFile:path];
 
-            
-            
-                [bt setBackgroundImage:image forState:UIControlStateNormal];
-                [thumbnailScrollView addSubview:bt];
+        
+        
+            [bt setBackgroundImage:image forState:UIControlStateNormal];
+            [thumbnailScrollView addSubview:bt];
 
 		}
         NSDictionary *dic = [[NSDictionary alloc]initWithObjectsAndKeys:[NSNumber numberWithInteger:1],@"column", [NSNumber numberWithInteger:1],@"page",nil];
@@ -158,7 +159,7 @@
         [UIView commitAnimations];
         
         
-        [self.m_delegate Hidden];
+        [self.m_delegate Hidden:YES];
     }
 
 }
@@ -309,7 +310,7 @@
             [UIView commitAnimations];
 
             
-            [self.m_delegate Hidden];
+            [self.m_delegate Hidden:YES];
         }
         [thumbnailScrollView setContentOffset:point animated:NO];
         NSDictionary *dicUserInfo = [[NSDictionary alloc]initWithObjectsAndKeys:[NSNumber numberWithInteger:100],@"page",[NSNumber numberWithInteger:page],@"column", nil];
@@ -327,7 +328,8 @@
     [UIView beginAnimations:nil context:context];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     [UIView setAnimationDuration:0.3];
-    
+    [self.m_delegate Hidden:isThumbnailShow];
+
     if (isThumbnailShow) {
         thumbnailScrollView.frame = CGRectMake(0, 1024, 768, 256);
         isThumbnailShow = NO;
@@ -339,7 +341,6 @@
     [UIView commitAnimations];
 
         
-    [self.m_delegate Hidden];
 }
 
 

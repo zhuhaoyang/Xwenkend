@@ -42,12 +42,13 @@
     UIImageView *backgroundImage = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"background.png"]];
     [self.view addSubview:backgroundImage];
     [backgroundImage release];
-    
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"issues" ofType:@"plist"];
-    NSArray *arrIssuesPlist = [[NSArray alloc]initWithContentsOfFile:path];
-    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:0];
-    arrThumbnailInfo = [[NSArray alloc]initWithArray:[dicIssueInfo objectForKey:@"contentInfo"]];
-    [arrIssuesPlist release];
+    Publisher *publisher = [Publisher sharedPublisher];
+//    [[publisher issueAtIndex:numOfIssue] objectForKey:@"contentInfo"];
+//    NSString *path = [[NSBundle mainBundle] pathForResource:@"issues" ofType:@"plist"];
+//    NSArray *arrIssuesPlist = [[NSArray alloc]initWithContentsOfFile:path];
+//    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:0];
+    arrThumbnailInfo = [[NSArray alloc]initWithArray:[[publisher issueAtIndex:numOfIssue] objectForKey:@"contentInfo"]];
+//    [arrIssuesPlist release];
     arrTag = [[NSMutableArray alloc]initWithCapacity:[arrThumbnailInfo count]];
     m_ScrollView = [[UIScrollView alloc]initWithFrame:self.view.bounds];
 //    m_ScrollView.pagingEnabled = YES;

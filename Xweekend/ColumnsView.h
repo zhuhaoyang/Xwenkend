@@ -32,6 +32,6 @@
 - (void)removeColums:(NSNumber *)column;
 @end
 @protocol ColumnsDelegate<NSObject>
-- (void)Hidden;
+- (void)Hidden:(BOOL)isHidden;
 - (void)turnToPage:(NSInteger)column;
 @end

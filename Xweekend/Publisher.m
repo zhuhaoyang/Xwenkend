@@ -19,8 +19,9 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 
 @end
 
-@implementation Publisher 
-
+@implementation Publisher
+@synthesize m_products = _m_products;
+@synthesize m_purchasedProducts = _m_purchasedProducts;
 @synthesize ready;
 + (Publisher *) sharedPublisher
 {
@@ -36,12 +37,18 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
     if(self) {
         ready = NO;
         issues = nil;
+        
     }
     return self;
 }
 
 -(void)dealloc {
     [issues release];
+    [m_productIdentifiers release];
+//    [_m_products release];
+    [_m_purchasedProducts release];
+//    [m_request release];
+        [m_productIdentifiers release];
     [super dealloc];
 }
 
@@ -68,6 +75,29 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
                            ready = YES;
                            [self addIssuesInNewsstand];
                            NSLog(@"%@",issues);
+                           
+                           // Store product identifiers
+                           if (m_productIdentifiers) {
+                               [m_productIdentifiers release];
+                           }
+                           m_productIdentifiers = [[NSMutableSet alloc]init];
+                           for (NSDictionary *dic in issues) {
+                               [m_productIdentifiers addObject:[dic objectForKey:@"productIdentifier"]];
+                           }
+                           // Check for previously purchased products
+                           NSMutableSet * purchasedProducts = [NSMutableSet set];
+                           for (NSString * productIdentifier in m_productIdentifiers) {
+                               BOOL productPurchased = [[NSUserDefaults standardUserDefaults] boolForKey:productIdentifier];
+                               if (productPurchased) {
+                                   [purchasedProducts addObject:productIdentifier];
+                                   NSLog(@"Previously purchased: %@", productIdentifier);
+                               }
+                               NSLog(@"Not purchased: %@", productIdentifier);
+                           }
+                           self.m_purchasedProducts = purchasedProducts;
+
+                           [self requestProducts];
+                           
                            dispatch_async(dispatch_get_main_queue(), ^{
                                [[NSNotificationCenter defaultCenter] postNotificationName:PublisherDidUpdateNotification object:self];
                            });
@@ -165,5 +195,162 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 -(NSString *)downloadPathForIssue:(NKIssue *)nkIssue {
     return [nkIssue.contentURL path];
 }
+
+#pragma mark - IAP
+
+
+- (void)requestProducts {
+    if (m_request) {
+        [m_request release];
+    }
+    m_request = [[SKProductsRequest alloc] initWithProductIdentifiers:m_productIdentifiers];
+    m_request.delegate = self;
+    [m_request start];
+    [self performSelector:@selector(timeout:) withObject:nil afterDelay:30.0];
+
+    
+}
+
+- (void)timeout:(id)arg {
+    [[NSNotificationCenter defaultCenter] postNotificationName:PublisherFailedUpdateNotification object:self];
+}
+
+- (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
+    
+    NSLog(@"Received products results...");
+    NSLog(@"%@",response.products);
+    if (_m_products) {
+        [_m_products release];
+    }
+    _m_products = [[NSArray alloc ]initWithArray:response.products];
+//    [m_request release];
+    for (SKProduct * obj in _m_products) {
+        for(NSMutableDictionary *issueInfo in issues) {
+            if([obj.productIdentifier isEqualToString:[issueInfo objectForKey:@"productIdentifier"]]) {
+//                float price = ;
+                [issueInfo setObject:[NSString stringWithFormat:@"%.2f￥",[obj.price floatValue]]forKey:@"price"];
+            }
+        }
+
+        NSLog(@"productIdentifier = %@",obj.productIdentifier);
+        NSLog(@"localizedDescription = %@",obj.localizedDescription);
+        NSLog(@"downloadable = %i",obj.downloadable);
+        NSLog(@"downloadContentVersion = %@",obj.downloadContentVersion);
+        NSLog(@"localizedTitle = %@",obj.localizedTitle);
+        NSLog(@"price = %@",obj.price);
+        NSLog(@"priceLocale = %@",obj.priceLocale);
+        NSLog(@"localizedTitle = %@",obj.localizedTitle);
+    }
+    
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kProductsLoadedNotification object:_m_products];
+}
+
+//- (id)initWithProductIdentifiers:(NSSet *)productIdentifiers {
+//- (id)init{
+//    if ((self = [super init])) {
+//        
+//        
+//        // Store product identifiers
+//        m_productIdentifiers = [[NSSet alloc]init];
+//        
+//        // Check for previously purchased products
+//        NSMutableSet * purchasedProducts = [NSMutableSet set];
+//        for (NSString * productIdentifier in m_productIdentifiers) {
+//            BOOL productPurchased = [[NSUserDefaults standardUserDefaults] boolForKey:productIdentifier];
+//            if (productPurchased) {
+//                [purchasedProducts addObject:productIdentifier];
+//                NSLog(@"Previously purchased: %@", productIdentifier);
+//            }
+//            NSLog(@"Not purchased: %@", productIdentifier);
+//        }
+//        self.m_purchasedProducts = purchasedProducts;
+//        
+//    }
+//    return self;
+//}
+
+- (void)recordTransaction:(SKPaymentTransaction *)transaction {
+    // Optional: Record the transaction on the server side...
+}
+
+- (void)provideContent:(NSString *)productIdentifier {
+    
+    NSLog(@"Toggling flag for: %@", productIdentifier);
+    [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:productIdentifier];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [self.m_purchasedProducts addObject:productIdentifier];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kProductPurchasedNotification object:productIdentifier];
+    
+}
+
+- (void)completeTransaction:(SKPaymentTransaction *)transaction {
+    
+    NSLog(@"completeTransaction...");
+    
+    [self recordTransaction: transaction];
+    [self provideContent: transaction.payment.productIdentifier];
+    [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+    
+}
+
+- (void)restoreTransaction:(SKPaymentTransaction *)transaction {
+    
+    NSLog(@"restoreTransaction...");
+    
+    [self recordTransaction: transaction];
+    [self provideContent: transaction.originalTransaction.payment.productIdentifier];
+    [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+    
+}
+
+- (void)failedTransaction:(SKPaymentTransaction *)transaction {
+    
+    if (transaction.error.code != SKErrorPaymentCancelled)
+    {
+        NSLog(@"Transaction error: %@", transaction.error.localizedDescription);
+    }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kProductPurchaseFailedNotification object:transaction];
+    
+    [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+    
+}
+
+- (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
+{
+    for (SKPaymentTransaction *transaction in transactions)
+    {
+        switch (transaction.transactionState)
+        {
+            case SKPaymentTransactionStatePurchased:
+                [self completeTransaction:transaction];
+                break;
+            case SKPaymentTransactionStateFailed:
+                [self failedTransaction:transaction];
+                break;
+            case SKPaymentTransactionStateRestored:
+                [self restoreTransaction:transaction];
+            default:
+                break;
+        }
+    }
+}
+
+- (void)buyProductIdentifier:(NSString *)productIdentifier {
+    
+    NSLog(@"Buying %@...", productIdentifier);
+    
+    //    SKPayment *payment = [SKPayment paymentWithProductIdentifier:productIdentifier];
+    //    [[SKPaymentQueue defaultQueue] addPayment:payment];
+    
+    SKMutablePayment *payment = [[SKMutablePayment alloc] init];
+    payment.productIdentifier = productIdentifier;
+    payment.quantity = 1;
+    [[SKPaymentQueue defaultQueue] addPayment:payment];
+    [payment release];
+}
+
 
 @end

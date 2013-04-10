@@ -8,16 +8,28 @@
 
 #import <Foundation/Foundation.h>
 #import <NewsstandKit/NewsstandKit.h>
+#import "StoreKit/StoreKit.h"
+
+#define kProductsLoadedNotification         @"ProductsLoaded"
+#define kProductPurchasedNotification       @"ProductPurchased"
+#define kProductPurchaseFailedNotification  @"ProductPurchaseFailed"
 
 extern  NSString *PublisherDidUpdateNotification;
 extern  NSString *PublisherFailedUpdateNotification;
 
-@interface Publisher : NSObject {
+@interface Publisher : NSObject<SKProductsRequestDelegate, SKPaymentTransactionObserver> {
     NSArray *issues;
     
+    NSMutableSet * m_productIdentifiers;
+    NSArray * m_products;
+    NSMutableSet * m_purchasedProducts;
+    SKProductsRequest * m_request;
+
 }
 
 @property (nonatomic,readonly,getter = isReady) BOOL ready;
+@property (nonatomic,retain) NSArray * m_products;
+@property (nonatomic,retain) NSMutableSet *m_purchasedProducts;
 + (Publisher *) sharedPublisher;
 
 -(void)addIssuesInNewsstand;
@@ -30,4 +42,10 @@ extern  NSString *PublisherFailedUpdateNotification;
 -(NSString *)downloadPathForIssue:(NKIssue *)nkIssue;
 -(UIImage *)coverImageForIssue:(NKIssue *)nkIssue;
 -(NSDictionary *)issueAtIndex:(NSInteger)index;
+
+
+- (void)requestProducts;
+//- (id)initWithProductIdentifiers:(NSSet *)productIdentifiers;
+- (void)buyProductIdentifier:(NSString *)productIdentifier;
+
 @end

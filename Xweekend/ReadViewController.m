@@ -170,12 +170,17 @@
     
     SinaWeibo *sinaweibo = [self sinaweibo];
     if ([sinaweibo isAuthValid]) {
-        
+        Publisher *publisher = [Publisher sharedPublisher];
+        NKLibrary *nkLib = [NKLibrary sharedLibrary];
+        NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:m_NumOfIssue]];
         NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
+        NSString *path = [[nkIssue.contentURL path] stringByAppendingPathComponent:str];
+        UIImage *image = [UIImage imageWithContentsOfFile:path];
+
         [sinaweibo requestWithURL:@"statuses/upload.json"
                            params:[NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    textView.text, @"status",
-                                   [UIImage imageNamed:str], @"pic", nil]
+                                   image, @"pic", nil]
                        httpMethod:@"POST"
                          delegate:self];
     }else{
@@ -309,7 +314,7 @@
 
 #pragma mark -
 #pragma mark ColumnsDelegate
-- (void)Hidden
+- (void)Hidden:(BOOL)isHidden
 {
         //    [self setWantsFullScreenLayout:YES];
 
@@ -318,15 +323,15 @@
     [UIView beginAnimations:nil context:context];
     [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
     [UIView setAnimationDuration:0.3];
-    if (isflage) {
+    if (isHidden) {
 //        [[UIApplication sharedApplication] setStatusBarHidden:YES];
         m_ColumnsView.frame = CGRectMake(0, 0, 768, 1024);
     }else{
 //        [[UIApplication sharedApplication] setStatusBarHidden:NO];
         m_ColumnsView.frame = CGRectMake(0, -64, 768, 1024);
     }
-    [[UIApplication sharedApplication]setStatusBarHidden:isflage withAnimation:UIStatusBarAnimationSlide];
-    [super.navigationController setNavigationBarHidden:isflage animated:FALSE];
+    [[UIApplication sharedApplication]setStatusBarHidden:isHidden withAnimation:UIStatusBarAnimationSlide];
+    [super.navigationController setNavigationBarHidden:isHidden animated:FALSE];
 
     [UIView setAnimationDelegate:self];
     [UIView commitAnimations];
@@ -395,12 +400,16 @@
     NSLog(@"sinaweiboDidLogIn userID = %@ accesstoken = %@ expirationDate = %@ refresh_token = %@", sinaweibo.userID, sinaweibo.accessToken, sinaweibo.expirationDate,sinaweibo.refreshToken);
     if ([sinaweibo isAuthValid]) {
         
-        
+        Publisher *publisher = [Publisher sharedPublisher];
+        NKLibrary *nkLib = [NKLibrary sharedLibrary];
+        NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:m_NumOfIssue]];
         NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
+        NSString *path = [[nkIssue.contentURL path] stringByAppendingPathComponent:str];
+        UIImage *image = [UIImage imageWithContentsOfFile:path];
         [sinaweibo requestWithURL:@"statuses/upload.json"
                            params:[NSMutableDictionary dictionaryWithObjectsAndKeys:
                                    textView.text, @"status",
-                                   [UIImage imageNamed:str], @"pic", nil]
+                                   image, @"pic", nil]
                        httpMethod:@"POST"
                          delegate:self];
     }

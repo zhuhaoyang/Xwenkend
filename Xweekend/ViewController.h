@@ -11,10 +11,12 @@
 #import "MBProgressHUD.h"
 #import "Publisher.h"
 #import <NewsstandKit/NewsstandKit.h>
+#import "Reachability.h"
+//#import "IAPHelper.h"
 //#import "ZipArchive.h"
 @interface ViewController : UIViewController
 <UITableViewDataSource,UITableViewDelegate,NSURLConnectionDownloadDelegate,
-SKRequestDelegate,SKProductsRequestDelegate,SKPaymentTransactionObserver,NSURLConnectionDelegate>{
+SKRequestDelegate,NSURLConnectionDelegate>{
     UITableView *m_tableView;
     UIButton *btRead;
     ReadViewController *m_ReadViewController;
@@ -23,7 +25,7 @@ SKRequestDelegate,SKProductsRequestDelegate,SKPaymentTransactionObserver,NSURLCo
     MBProgressHUD *m_hud;
     UIImageView *testImageView;
     Publisher *publisher;
-    UIBarButtonItem *editButton;
+    UIButton *editButton;
     UIBarButtonItem *waitButton;
     UIBarButtonItem *refreshButton;
     UIView *backView;

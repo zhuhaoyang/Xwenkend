@@ -30,17 +30,57 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     self.title = @"行周末";
-    editButton = [[UIBarButtonItem alloc] initWithTitle:@"编辑" style:UIBarButtonItemStyleBordered target:self action:@selector(edit)];
-    self.navigationItem.leftBarButtonItem = editButton;
+    UIView *liftView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 120, 30)];
+//    editButton = [[UIBarButtonItem alloc] initWithTitle:@"编辑" style:UIBarButtonItemStyleBordered target:self action:@selector(edit)];
+    editButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    editButton.frame = CGRectMake(0, 0, 55, 30);
+    [editButton addTarget:self action:@selector(edit) forControlEvents:UIControlEventTouchUpInside];
+//    [editButton setTitle:@"编辑" forState:UIControlStateNormal];
+    [editButton setBackgroundImage:[UIImage imageNamed:@"BUTTON5"] forState:UIControlStateNormal];
+    [liftView addSubview:editButton];
+    UIButton *btRestore = [UIButton buttonWithType:UIButtonTypeCustom];
+    btRestore.frame = CGRectMake(60, 0, 55, 30);
+    [btRestore addTarget:self action:@selector(restore) forControlEvents:UIControlEventTouchUpInside];
+//    [btRestore setTitle:@"恢复" forState:UIControlStateNormal];
+    [btRestore setBackgroundImage:[UIImage imageNamed:@"BUTTON6"] forState:UIControlStateNormal];
+    [liftView addSubview:btRestore];
+    
+    UIBarButtonItem *liftButton = [[UIBarButtonItem alloc]initWithCustomView:liftView];
+    [self.navigationItem setLeftBarButtonItem:liftButton];
+    [liftView release];
+    [liftButton release];
+//    self.navigationItem.leftBarButtonItem = editButton;
     
     backView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 768, 1024)];
     m_hud = [MBProgressHUD showHUDAddedTo:backView animated:YES];
     m_hud.labelText = @"Loading comics...";
 //    [self.view setBackgroundColor:[UIColor blackColor]];
-    refreshButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh target:self action:@selector(loadIssues)];
-    UIActivityIndicatorView *loadingActivity = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite] autorelease];
+//    refreshButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    [refreshButton setBackgroundImage:[UIImage imageNamed:@"BUTTON9"] forState:UIControlStateNormal];
+//    [refreshButton addTarget:self action:@selector(loadIssues) forControlEvents:UIControlEventTouchUpInside];
+//    refreshButton.frame = CGRectMake(0, 0, 55, 30);
+    
+//    refreshButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonItemStylePlain target:self action:@selector(loadIssues)];
+//    refreshButton = [[UIBarButtonItem alloc]initWithImage:[UIImage imageNamed:@"BUTTON9"] style:UIBarButtonItemStylePlain target:self action:@selector(loadIssues)];
+    UIView *rightView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 42, 30)];
+    UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [rightButton setBackgroundImage:[UIImage imageNamed:@"BUTTON9"] forState:UIControlStateNormal];
+    [rightButton addTarget:self action:@selector(loadIssues) forControlEvents:UIControlEventTouchUpInside];
+    rightButton.frame = CGRectMake(0, 0, 42, 30);
+    [rightView addSubview:rightButton];
+    refreshButton = [[UIBarButtonItem alloc]initWithCustomView:rightView];
+    [rightView release];
+//    [refreshButton setBackButtonBackgroundImage:[UIImage imageNamed:@"BUTTON9"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+//    [refreshButton setAction:@selector(loadIssues)];
+//    [refreshButton setTarget:self];
+    
+//    UIBarButtonItem *rightView = [[UIBarButtonItem alloc]initWithCustomView:refreshButton];
+//    refreshButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"BUTTON9"] style:UIBarButtonItemStyleBordered target:self action:@selector(loadIssues)];
+    UIActivityIndicatorView *loadingActivity = [[[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge] autorelease];
+    loadingActivity.frame = CGRectMake(0, 0, 42, 30);
     [loadingActivity startAnimating];
     waitButton = [[UIBarButtonItem alloc] initWithCustomView:loadingActivity];
+    [waitButton setBackButtonBackgroundImage:[UIImage imageNamed:@"BUTTON9"] forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
     [waitButton setTarget:nil];
     [waitButton setAction:nil];
     
@@ -64,6 +104,27 @@
     m_tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [backGroundView release];
     [self.view addSubview:m_tableView];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(productsLoaded:) name:kProductsLoadedNotification object:nil];
+    Reachability *reach = [Reachability reachabilityForInternetConnection];
+    NetworkStatus netStatus = [reach currentReachabilityStatus];
+    if (netStatus == NotReachable) {
+        NSLog(@"No internet connection!");
+    } else {
+        if (publisher.m_products != nil) {
+            
+//            [[Publisher sharedPublisher] requestProducts];
+//            m_hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+//            m_hud.labelText = @"Loading comics...";
+            [self performSelector:@selector(timeout:) withObject:nil afterDelay:30.0];
+            
+        }
+    }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(productPurchased:) name:kProductPurchasedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector: @selector(productPurchaseFailed:) name:kProductPurchaseFailedNotification object: nil];
+    
+
+    
     
 //    NSString *path = [[NSBundle mainBundle] pathForResource:@"issues" ofType:@"plist"];
 //    arrIssuesPlist = [[NSArray alloc]initWithContentsOfFile:path];
@@ -107,42 +168,31 @@
 
 }
 
-- (void)loadOrRead:(id)sender
+- (void)loadOrReadOrBuy:(id)sender
 {
-//    if (m_ReadViewController) {
-//        [m_ReadViewController release];
-//        m_ReadViewController = nil;
-//    }
-    UIButton *bt = (UIButton *)sender;
-    NSMutableString *str = [NSMutableString stringWithFormat:@"%i",bt.tag];
-    [str deleteCharactersInRange:NSMakeRange(0, 1)];
-    NSInteger num = [str integerValue] - 1;
+
+    if (!isEdit) {
+        UIButton *bt = (UIButton *)sender;
+        NSMutableString *str = [NSMutableString stringWithFormat:@"%i",bt.tag];
+        [str deleteCharactersInRange:NSMakeRange(0, 1)];
+        NSInteger num = [str integerValue] - 1;
+        
+        NKLibrary *nkLib = [NKLibrary sharedLibrary];
+        NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:num]];
+        // NSURL *downloadURL = [nkIssue contentURL];
+        if ([publisher.m_purchasedProducts containsObject:[[publisher issueAtIndex:(num)] objectForKey:@"productIdentifier"]]) {
+            if (nkIssue.status != NKIssueContentStatusDownloading) {
+                if(nkIssue.status==NKIssueContentStatusAvailable) {
+                    [self readIssue:str];
+                } else if(nkIssue.status==NKIssueContentStatusNone) {
+                    [self downloadIssueAtIndex:num];
+                }
+            }
+        }else{
+            [publisher buyProductIdentifier:[[publisher issueAtIndex:num] objectForKey:@"productIdentifier"]];
+        }
     
-    NKLibrary *nkLib = [NKLibrary sharedLibrary];
-    NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:num]];
-    // NSURL *downloadURL = [nkIssue contentURL];
-    if(nkIssue.status==NKIssueContentStatusAvailable) {
-        [self readIssue:str];
-    } else if(nkIssue.status==NKIssueContentStatusNone) {
-        [self downloadIssueAtIndex:num];
     }
-
-    
-    
-    
-    
-//    m_hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-//    m_hud.labelText = @"加载中...";
-//    m_ReadViewController = [[ReadViewController alloc]initWithNibName:@"ReadViewController" bundle:[NSBundle mainBundle] numOfIssues:str];
-//    [[UIApplication sharedApplication]setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-//    [self.navigationController setNavigationBarHidden:YES animated:FALSE];
-////    [self setWantsFullScreenLayout:YES];
-//    
-//    [self.navigationController pushViewController:m_ReadViewController animated:YES];
-//    [m_ReadViewController release];
-
-//    [MBProgressHUD hideHUDForView:self.view animated:YES];
-//    m_hud = nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -209,20 +259,45 @@
         NKLibrary *nkLib = [NKLibrary sharedLibrary];
         NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:alertView.tag]];
         [nkLib removeIssue:nkIssue];
-        //    [publisher getIssuesList];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(publisherReady:) name:PublisherDidUpdateNotification object:publisher];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(publisherFailed:) name:PublisherFailedUpdateNotification object:publisher];
+        [publisher getIssuesList];
+//        [publisher requestProducts];
         [m_tableView reloadData];
     }
 }
 
 // remove all downloaded magazines
 - (void)edit {
+    NKLibrary *nkLib = [NKLibrary sharedLibrary];
+//    Publisher *publisher = [Publisher sharedPublisher];
+    NSInteger num = [publisher numberOfIssues];
     if (isEdit) {
-        [editButton setTitle:@"编辑"];
+//        [editButton setTitle:@"编辑" forState:UIControlStateNormal];
+        [editButton setBackgroundImage:[UIImage imageNamed:@"BUTTON5"] forState:UIControlStateNormal];
+        for (NSInteger i = 1; i <= num; i++) {
+            NSInteger tag = [[NSString stringWithFormat:@"4%i",i] integerValue];
+            UIButton *btDel = (UIButton *)[m_tableView viewWithTag:tag];
+            btDel.enabled = NO;
+            btDel.alpha = 0.0;
+        }
+        refreshButton.enabled = YES;
     }else{
-        [editButton setTitle:@"完成"];
+//        [editButton setTitle:@"完成" forState:UIControlStateNormal];
+        [editButton setBackgroundImage:[UIImage imageNamed:@"BUTTON7"] forState:UIControlStateNormal];
+        for (NSInteger i = 1; i <= num; i++) {
+            NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:(i-1)]];
+            if (nkIssue.status == NKIssueContentStatusAvailable) {
+                NSInteger tag = [[NSString stringWithFormat:@"4%i",i] integerValue];
+                UIButton *btDel = (UIButton *)[m_tableView viewWithTag:tag];
+                btDel.enabled = YES;
+                btDel.alpha = 1.0;
+            }
+        }
+        refreshButton.enabled = NO;
     }
     
-    [m_tableView reloadData];
+//    [m_tableView reloadData];
     isEdit = !isEdit;
 
 //    NKLibrary *nkLib = [NKLibrary sharedLibrary];
@@ -249,13 +324,13 @@
     progressView.alpha=1.0;
     progressView.progress=1.f*totalBytesWritten/expectedTotalBytes;
 
-    tag =  [[NSString stringWithFormat:@"1%i", num] integerValue];
-    UIButton *bt = (UIButton *)[m_tableView viewWithTag:tag];
-    bt.enabled = NO;
+//    tag =  [[NSString stringWithFormat:@"1%i", num] integerValue];
+//    UIButton *bt = (UIButton *)[m_tableView viewWithTag:tag];
+//    bt.enabled = NO;
 
-    tag =  [[NSString stringWithFormat:@"3%i", num] integerValue];
-    UIButton *btLoadOrRead = (UIButton *)[m_tableView viewWithTag:tag];
-    btLoadOrRead.enabled = NO;
+//    tag =  [[NSString stringWithFormat:@"3%i", num] integerValue];
+//    UIButton *btLoadOrRead = (UIButton *)[m_tableView viewWithTag:tag];
+//    btLoadOrRead.enabled = NO;
 
 //    [[cell viewWithTag:103] setAlpha:0.0];
 }
@@ -324,20 +399,20 @@
         [[UIApplication sharedApplication] setNewsstandIconImage:img];
 //        [[UIApplication sharedApplication] setApplicationIconBadgeNumber:1];
     }
-    NSInteger num = [[dnl.userInfo objectForKey:@"num"] integerValue];
+//    NSInteger num = [[dnl.userInfo objectForKey:@"num"] integerValue];
     
 //    NSInteger tag =  [[NSString stringWithFormat:@"2%i", num] integerValue];
 //    UIProgressView *progressView = (UIProgressView *)[m_tableView viewWithTag:tag];
 //    progressView.alpha=1.0;
 //    progressView.progress=1.f*totalBytesWritten/expectedTotalBytes;
     
-    NSInteger tag =  [[NSString stringWithFormat:@"1%i", num] integerValue];
-    UIButton *bt = (UIButton *)[m_tableView viewWithTag:tag];
-    bt.enabled = YES;
+//    NSInteger tag =  [[NSString stringWithFormat:@"1%i", num] integerValue];
+//    UIButton *bt = (UIButton *)[m_tableView viewWithTag:tag];
+//    bt.enabled = YES;
     
-    tag =  [[NSString stringWithFormat:@"3%i", num] integerValue];
-    UIButton *btLoadOrRead = (UIButton *)[m_tableView viewWithTag:tag];
-    btLoadOrRead.enabled = YES;
+//    tag =  [[NSString stringWithFormat:@"3%i", num] integerValue];
+//    UIButton *btLoadOrRead = (UIButton *)[m_tableView viewWithTag:tag];
+//    btLoadOrRead.enabled = YES;
 
     
     [m_tableView reloadData];
@@ -418,57 +493,68 @@
             }];
 //            [bt setBackgroundImage:image forState:UIControlStateNormal];
             bt.tag = [[NSString stringWithFormat:@"1%i",num] integerValue];
-            [bt addTarget:self action:@selector(loadOrRead:) forControlEvents:UIControlEventTouchUpInside];
+//            bt.adjustsImageWhenHighlighted = NO;
+            [bt addTarget:self action:@selector(loadOrReadOrBuy:) forControlEvents:UIControlEventTouchUpInside];
+            bt.showsTouchWhenHighlighted = YES;
             
             UIProgressView *progressView = [[UIProgressView alloc]initWithProgressViewStyle:UIProgressViewStyleDefault];
             progressView.frame = CGRectMake((column - 1)*256 + 20, 300, 216, 9);
             progressView.tag = [[NSString stringWithFormat:@"2%i",num] integerValue];
             progressView.alpha = 1;
-            progressView.progress = 0.5;
+//            progressView.progress = 0.5;
             
-            UIButton *btLoadOrRead = [UIButton buttonWithType:UIButtonTypeCustom];
-            btLoadOrRead.frame = CGRectMake((column - 1)*256 + 74.5, 330, 107, 39);
-            [btLoadOrRead addTarget:self action:@selector(loadOrRead:) forControlEvents:UIControlEventTouchUpInside];
-            btLoadOrRead.tag = [[NSString stringWithFormat:@"3%i",num] integerValue];
-            
+            UIButton *btLoadOrReadOrBuy = [UIButton buttonWithType:UIButtonTypeCustom];
+            btLoadOrReadOrBuy.frame = CGRectMake((column - 1)*256 + 74.5, 330, 107, 39);
+            [btLoadOrReadOrBuy addTarget:self action:@selector(loadOrReadOrBuy:) forControlEvents:UIControlEventTouchUpInside];
+            btLoadOrReadOrBuy.tag = [[NSString stringWithFormat:@"3%i",num] integerValue];
+//            btLoadOrReadOrBuy.adjustsImageWhenHighlighted = NO;
             UIButton *btDel = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-            btDel.frame = CGRectMake(210, -10, 20, 20);
+            btDel.frame = CGRectMake(200, -10, 30, 30);
 //            btDel.backgroundColor = [UIColor blackColor];
             [btDel addTarget:self action:@selector(deleteIssue:) forControlEvents:UIControlEventTouchUpInside];
             btDel.tag = [[NSString stringWithFormat:@"4%i",num] integerValue];
-            if (isEdit) {
-                btDel.alpha = 1.0;
-                btDel.enabled = YES;
-            }else{
-                btDel.alpha = 0.0;
-                btDel.enabled = NO;
-            }
+//            if (isEdit) {
+//                btDel.alpha = 1.0;
+//                btDel.enabled = YES;
+//            }else{
+            btDel.alpha = 0.0;
+            btDel.enabled = NO;
+//            }
             [bt addSubview:btDel];
             NKLibrary *nkLib = [NKLibrary sharedLibrary];
             NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:(num-1)]];
-
-            if(nkIssue.status==NKIssueContentStatusAvailable) {
-                [btLoadOrRead setBackgroundImage:[UIImage imageNamed:@"ICON1"] forState:UIControlStateNormal];
-//                tapLabel.text=@"TAP TO READ";
-//                tapLabel.alpha=1.0;
-                btLoadOrRead.alpha=1.0;
-                progressView.alpha=0.0;
-            } else {
-                if(nkIssue.status==NKIssueContentStatusDownloading) {
-                    progressView.alpha=1.0;
-                    btLoadOrRead.alpha=0.0;
-//                    tapLabel.alpha=0.0;
-                } else {
-                    btLoadOrRead.alpha=1.0;
+            if ([publisher.m_purchasedProducts containsObject:[[publisher issueAtIndex:(num-1)] objectForKey:@"productIdentifier"]]) {
+                if(nkIssue.status==NKIssueContentStatusAvailable) {
+                    [btLoadOrReadOrBuy setBackgroundImage:[UIImage imageNamed:@"ICON1"] forState:UIControlStateNormal];
+                    //                tapLabel.text=@"TAP TO READ";
+                    //                tapLabel.alpha=1.0;
+                    btLoadOrReadOrBuy.alpha=1.0;
                     progressView.alpha=0.0;
-                    [btLoadOrRead setBackgroundImage:[UIImage imageNamed:@"ICON3"] forState:UIControlStateNormal];
-
-//                    tapLabel.alpha=1.0;
-//                    tapLabel.text=@"TAP TO DOWNLOAD";
+                } else {
+                    if(nkIssue.status==NKIssueContentStatusDownloading) {
+                        progressView.alpha=1.0;
+                        btLoadOrReadOrBuy.alpha=1.0;
+                        //                    tapLabel.alpha=0.0;
+                        [btLoadOrReadOrBuy setBackgroundImage:[UIImage imageNamed:@"ICON3"] forState:UIControlStateNormal];
+                    } else {
+                        btLoadOrReadOrBuy.alpha=1.0;
+                        progressView.alpha=0.0;
+                        [btLoadOrReadOrBuy setBackgroundImage:[UIImage imageNamed:@"ICON3"] forState:UIControlStateNormal];
+                        
+                        //                    tapLabel.alpha=1.0;
+                        //                    tapLabel.text=@"TAP TO DOWNLOAD";
+                    }
+                    
                 }
-                
+            }else{
+                NSString *price = [[publisher issueAtIndex:(num-1)] objectForKey:@"price"];
+                [btLoadOrReadOrBuy setBackgroundImage:[UIImage imageNamed:@"ICON4"] forState:UIControlStateNormal];
+                [btLoadOrReadOrBuy setTitle:price forState:UIControlStateNormal];
+                btLoadOrReadOrBuy.alpha=1.0;
+                progressView.alpha=0.0;
             }
 
+            
 //            bt.layer.shadowColor = [UIColor blackColor].CGColor;
 //            bt.layer.shadowOffset = CGSizeMake(0, 4);
 //            bt.layer.shadowOpacity = 0.5;
@@ -476,9 +562,9 @@
 
             [cell addSubview:bt];
             [cell addSubview:progressView];
-            [cell addSubview:btLoadOrRead];
+            [cell addSubview:btLoadOrReadOrBuy];
             [progressView release];
-            }
+        }
     }else{
         
         cellBackgroundView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"title"]];
@@ -518,6 +604,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(publisherReady:) name:PublisherDidUpdateNotification object:publisher];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(publisherFailed:) name:PublisherFailedUpdateNotification object:publisher];
     [publisher getIssuesList];
+//    [publisher requestProducts];
 }
 
 -(void)publisherReady:(NSNotification *)not {
@@ -527,10 +614,7 @@
 }
 
 -(void)showIssues {
-    [self.navigationItem setRightBarButtonItem:refreshButton];
-    [MBProgressHUD hideHUDForView:backView animated:YES];
-    [backView removeFromSuperview];
-    [m_tableView reloadData];
+//    [m_tableView reloadData];
 }
 
 -(void)publisherFailed:(NSNotification *)not {
@@ -549,4 +633,65 @@
     [self.navigationItem setRightBarButtonItem:refreshButton];
 }
 
+
+#pragma mark - IAP
+- (void)restore
+{
+    [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];    
+}
+
+
+- (void)productsLoaded:(NSNotification *)notification {
+    
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    [self.navigationItem setRightBarButtonItem:refreshButton];
+    [MBProgressHUD hideHUDForView:backView animated:YES];
+    [backView removeFromSuperview];
+
+//    [MBProgressHUD hideHUDForView:self.view animated:YES];
+//    m_tableView.hidden = FALSE;
+    
+    [m_tableView reloadData];
+    
+}
+
+- (void)productPurchased:(NSNotification *)notification {
+    
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+//    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    
+    NSString *productIdentifier = (NSString *) notification.object;
+    NSLog(@"Purchased: %@", productIdentifier);
+    
+    [m_tableView reloadData];
+    
+}
+
+- (void)productPurchaseFailed:(NSNotification *)notification {
+    
+    [NSObject cancelPreviousPerformRequestsWithTarget:self];
+//    [MBProgressHUD hideHUDForView:self.view animated:YES];
+    
+    SKPaymentTransaction * transaction = (SKPaymentTransaction *) notification.object;
+    if (transaction.error.code != SKErrorPaymentCancelled) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"
+                                                        message:transaction.error.localizedDescription
+                                                       delegate:nil
+                                              cancelButtonTitle:nil
+                                              otherButtonTitles:@"OK", nil];
+        
+        [alert show];
+    }
+    
+}
+
+- (void)timeout:(id)arg {
+    
+//    m_hud.labelText = @"Timeout!";
+//    m_hud.detailsLabelText = @"Please try again later.";
+//    m_hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark.jpg"]];
+//    m_hud.mode = MBProgressHUDModeCustomView;
+//    [self performSelector:@selector(dismissHUD:) withObject:nil afterDelay:3.0];
+    
+}
 @end

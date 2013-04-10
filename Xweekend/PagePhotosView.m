@@ -42,6 +42,7 @@
     NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:numOfIssue]];
 
     NSString *str = [NSString stringWithFormat:@"%@%i.jpg",[dicData objectForKey:@"title"],m_page];
+    NSString *strTag = [NSString stringWithFormat:@"%@%i",[dicData objectForKey:@"title"],m_page];
 //    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
     NSString *path = [[nkIssue.contentURL path] stringByAppendingPathComponent:str];
     UIImage *image = [UIImage imageWithContentsOfFile:path];
@@ -58,19 +59,20 @@
 
     [[NSNotificationCenter defaultCenter] postNotificationName:@"hidden" object:nil];
     [arrTag replaceObjectAtIndex:(m_page - 1) withObject:[NSNumber numberWithBool:YES]];
-    if ([dicCopyrightPage objectForKey:str] != nil) {
+    if ([dicCopyrightPage objectForKey:strTag] != nil) {
         btVisitWeibo *m_btVisitWeibo = [btVisitWeibo buttonWithType:UIButtonTypeCustom];
         m_btVisitWeibo.frame = CGRectMake(160, frame.size.height * (m_page-1)+797, 92, 36);
         [m_btVisitWeibo addTarget:self action:@selector(visitWeibo:) forControlEvents:UIControlEventTouchUpInside];
 //        m_btVisitWeibo.backgroundColor = [UIColor blackColor];
-        m_btVisitWeibo.url = [dicCopyrightPage objectForKey:str];
+        m_btVisitWeibo.url = [dicCopyrightPage objectForKey:strTag];
         [m_scrollView addSubview:m_btVisitWeibo];
     }
-    if ([dicWeiboURL objectForKey:str] != nil) {
+    if ([dicWeiboURL objectForKey:strTag] != nil) {
         btVisitWeibo *m_btVisitWeibo = [btVisitWeibo buttonWithType:UIButtonTypeCustom];
         m_btVisitWeibo.frame = CGRectMake(20, frame.size.height * (m_page-1)+281, 144, 44);
         [m_btVisitWeibo addTarget:self action:@selector(visitWeibo:) forControlEvents:UIControlEventTouchUpInside];
-        m_btVisitWeibo.url = [dicWeiboURL objectForKey:str];
+        m_btVisitWeibo.url = [dicWeiboURL objectForKey:strTag];
+        NSLog(@"%@",m_btVisitWeibo.url);
         [m_scrollView addSubview:m_btVisitWeibo];
     }
 }
@@ -78,6 +80,7 @@
 - (void)visitWeibo:(id)sender
 {
     btVisitWeibo *bt = sender;
+    NSLog(@"%@",bt.url);
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:bt.url]];
 }
 
@@ -93,14 +96,15 @@
 		m_scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
         
 		[self addSubview:m_scrollView];
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"issues" ofType:@"plist"];
-        NSArray *arr = [[NSArray alloc]initWithContentsOfFile:path];
-        NSDictionary *dicIssueInfo = [arr objectAtIndex:numOfIssue];
+//        NSString *path = [[NSBundle mainBundle] pathForResource:@"issues" ofType:@"plist"];
+//        NSArray *arr = [[NSArray alloc]initWithContentsOfFile:path];
+//        NSDictionary *dicIssueInfo = [arr objectAtIndex:numOfIssue];
 //        NSLog(@"%@",dicIssueInfo);
 //        NSLog(@"%@",[dicIssueInfo objectForKey:@"weiboURL"]);
+        NSDictionary *dicIssueInfo = [[NSDictionary alloc]initWithDictionary:[[Publisher sharedPublisher] issueAtIndex:numOfIssue]];
 		dicWeiboURL = [[NSDictionary alloc]initWithDictionary:[dicIssueInfo objectForKey:@"weiboURL"]];
         dicCopyrightPage = [[NSDictionary alloc]initWithDictionary:[dicIssueInfo objectForKey:@"copyrightPageURL"]];
-        [arr release];
+        [dicIssueInfo release];
         kNumberOfPages = [[dic objectForKey:@"numOfPaages"] integerValue];
         arrTag = [[NSMutableArray alloc]initWithCapacity:0];
         for (NSInteger x = 0; x < kNumberOfPages; x++) {
@@ -322,6 +326,8 @@
 //    arrData = nil;
     [arrTag release];
     arrTag = nil;
+    [dicCopyrightPage release];
+    dicCopyrightPage = nil;
     [dicWeiboURL release];
     dicWeiboURL = nil;
     [super dealloc];

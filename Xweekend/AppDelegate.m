@@ -11,6 +11,7 @@
 #import "ViewController.h"
 #import "LoadingPageViewController.h"
 #import "SinaWeibo.h"
+#import "Publisher.h"
 
 
 @implementation AppDelegate
@@ -44,7 +45,7 @@
         self.sinaweibo.userID = [sinaweiboInfo objectForKey:@"UserIDKey"];
     }
 
-    
+    [[SKPaymentQueue defaultQueue] addTransactionObserver:[Publisher sharedPublisher]];
     return YES;
 }
 
