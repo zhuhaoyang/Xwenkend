@@ -28,8 +28,9 @@ UITableViewDataSource,UITableViewDelegate>{
     ThumbnailViewController *thumbnailView;
     BOOL isShow;
     MBProgressHUD *m_hud;
-    UITableView *m_tableView;
+//    UITableView *m_tableView;
     UIView *backGround;
+    UIImageView *shareView;
     UITextView *textView;
     NSInteger m_Column;
     NSInteger m_NumOfIssue;

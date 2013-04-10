@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-#define kAppKey             @"3448415748"
-#define kAppSecret          @"03aa2cb686379d48f3ea0117607590e3"
-#define kAppRedirectURI     @"http://www.sina.com"
+#import "MobClick.h"
+#define kAppKey             @"3123568899"
+#define kAppSecret          @"f36aa095949a6fd54451ede65cd2e884"
+#define kAppRedirectURI     @"http://www.tingso.com"
 
 #ifndef kAppKey
 #error

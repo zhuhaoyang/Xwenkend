@@ -79,7 +79,9 @@
 
 - (void)visitWeibo:(id)sender
 {
+
     btVisitWeibo *bt = sender;
+    [MobClick event:@"visitWeibo" label:[NSString stringWithFormat:@"%@",bt.url]];
     NSLog(@"%@",bt.url);
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:bt.url]];
 }

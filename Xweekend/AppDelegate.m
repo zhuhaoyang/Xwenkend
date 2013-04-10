@@ -46,6 +46,11 @@
     }
 
     [[SKPaymentQueue defaultQueue] addTransactionObserver:[Publisher sharedPublisher]];
+    
+    
+    //umeng
+    [MobClick startWithAppkey:@"5164c6a156240bfe620231e3"];
+    
     return YES;
 }
 

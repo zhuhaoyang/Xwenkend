@@ -513,16 +513,19 @@
 //            btDel.backgroundColor = [UIColor blackColor];
             [btDel addTarget:self action:@selector(deleteIssue:) forControlEvents:UIControlEventTouchUpInside];
             btDel.tag = [[NSString stringWithFormat:@"4%i",num] integerValue];
-//            if (isEdit) {
-//                btDel.alpha = 1.0;
-//                btDel.enabled = YES;
-//            }else{
-            btDel.alpha = 0.0;
-            btDel.enabled = NO;
-//            }
-            [bt addSubview:btDel];
             NKLibrary *nkLib = [NKLibrary sharedLibrary];
             NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:(num-1)]];
+            if ((nkIssue.status == NKIssueContentStatusAvailable) &&isEdit) {
+//                NSInteger tag = [[NSString stringWithFormat:@"4%i",num] integerValue];
+//                UIButton *btDel = (UIButton *)[m_tableView viewWithTag:tag];
+                btDel.enabled = YES;
+                btDel.alpha = 1.0;
+            }else{
+                btDel.alpha = 0.0;
+                btDel.enabled = NO;
+            }
+            [bt addSubview:btDel];
+            
             if ([publisher.m_purchasedProducts containsObject:[[publisher issueAtIndex:(num-1)] objectForKey:@"productIdentifier"]]) {
                 if(nkIssue.status==NKIssueContentStatusAvailable) {
                     [btLoadOrReadOrBuy setBackgroundImage:[UIImage imageNamed:@"ICON1"] forState:UIControlStateNormal];

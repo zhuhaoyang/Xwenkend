@@ -358,6 +358,8 @@
     thumbnailScrollView = nil;
     [arrData release];
 	arrData = nil;
+    [arrTag release];
+    arrTag = nil;
     [super dealloc];
 
 }

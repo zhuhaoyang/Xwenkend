@@ -38,33 +38,39 @@
         m_NumOfIssue = [numOfIssues integerValue] - 1;
         NSLog(@"%i",m_NumOfIssue);
 
-        m_tableView = [[UITableView alloc]initWithFrame:CGRectMake(10, 10, 300, 150) style:UITableViewStyleGrouped];
-        m_tableView.layer.cornerRadius = 6;
-        m_tableView.layer.masksToBounds = YES;
-        m_tableView.dataSource = self;
-        m_tableView.delegate = self;
-        m_tableView.scrollEnabled = NO;
-        m_tableView.layer.shadowColor = [UIColor blackColor].CGColor;
-        m_tableView.layer.shadowOffset = CGSizeMake(4, -4);
-        m_tableView.layer.shadowOpacity = 0.5;
-        m_tableView.layer.shadowRadius = 4.0;
-        UIButton *btShare = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        btShare.frame = CGRectMake(20, 115, 80, 30);
-        [btShare setTitle:@"分享到微博" forState:UIControlStateNormal];
-        [btShare addTarget:self action:@selector(shareToWeibo) forControlEvents:UIControlEventTouchUpInside];
-        [m_tableView addSubview:btShare];
         
-        UIButton *btCancel = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        btCancel.frame = CGRectMake(170, 115, 80, 30);
-        [btCancel setTitle:@"取消" forState:UIControlStateNormal];
-        [btCancel addTarget:self action:@selector(cancelShare) forControlEvents:UIControlEventTouchUpInside];
-        [m_tableView addSubview:btCancel];
-
-        textView = [[UITextView alloc]initWithFrame:CGRectMake(5, 0, 280, 85)];
+        shareView = [[UIImageView alloc]initWithFrame:CGRectMake(109, 200, 550, 186) ];
+        [shareView setImage:[UIImage imageNamed:@"tag"]];
+        shareView.layer.cornerRadius = 6;
+        shareView.layer.masksToBounds = YES;
+//        UIImageView *img = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"tag"]];
+//        [shareView addSubview:img];
+       
+        textView = [[UITextView alloc]initWithFrame:CGRectMake(15, 30, 520, 156)];
         textView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
-        textView.font = [UIFont systemFontOfSize:17];
+        textView.font = [UIFont systemFontOfSize:20];
         textView.delegate = self;
+//        textView.text = [NSString stringWithFormat:@"%@",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"columnInfo"]];
+        textView.text = @"萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈按时打算";
+        textView.scrollEnabled = NO;
+        [shareView addSubview:textView];
 
+        
+        UIButton *btShare = [UIButton buttonWithType:UIButtonTypeCustom];
+        btShare.frame = CGRectMake(473, 6, 62, 28);
+        [btShare setBackgroundImage:[UIImage imageNamed:@"send"] forState:UIControlStateNormal];
+        //        [btShare setTitle:@"分享到微博" forState:UIControlStateNormal];
+        [btShare addTarget:self action:@selector(shareToWeibo) forControlEvents:UIControlEventTouchUpInside];
+        [shareView addSubview:btShare];
+        [shareView bringSubviewToFront:btShare];
+        UIButton *btCancel = [UIButton buttonWithType:UIButtonTypeCustom];
+        btCancel.frame = CGRectMake(15, 6, 62, 28);
+        [btCancel setBackgroundImage:[UIImage imageNamed:@"cancel"] forState:UIControlStateNormal];
+        //        [btCancel setTitle:@"取消" forState:UIControlStateNormal];
+        [btCancel addTarget:self action:@selector(cancelShare) forControlEvents:UIControlEventTouchUpInside];
+        [shareView addSubview:btCancel];
+        [shareView bringSubviewToFront:btCancel];
+        
         backGround = [[UIView alloc]initWithFrame:[[UIScreen mainScreen] bounds]];
         backGround.backgroundColor = [UIColor blackColor];
         backGround.alpha = 0.7;
@@ -148,9 +154,10 @@
    [actionSheet addButtonWithTitle:@"分享到微博" block:^{
        [(UIButton *)[self.navigationController.navigationBar viewWithTag:101] setEnabled:NO];
        [(UIButton *)[self.navigationController.navigationBar viewWithTag:102] setEnabled:NO];
-    
+//       NSLog(@"%@",[shareView subviews]);
        [self.view addSubview:backGround];
-       [self.view addSubview:m_tableView];
+       [self.view addSubview:shareView];
+       [textView becomeFirstResponder];
     }];
 
 
@@ -166,7 +173,7 @@
     [(UIButton *)[self.navigationController.navigationBar viewWithTag:101] setEnabled:YES];
     [(UIButton *)[self.navigationController.navigationBar viewWithTag:102] setEnabled:YES];
     [backGround removeFromSuperview];
-    [m_tableView removeFromSuperview];
+    [shareView removeFromSuperview];
     
     SinaWeibo *sinaweibo = [self sinaweibo];
     if ([sinaweibo isAuthValid]) {
@@ -194,7 +201,7 @@
     [(UIButton *)[self.navigationController.navigationBar viewWithTag:101] setEnabled:YES];
     [(UIButton *)[self.navigationController.navigationBar viewWithTag:102] setEnabled:YES];
     [backGround removeFromSuperview];
-    [m_tableView removeFromSuperview];
+    [shareView removeFromSuperview];
 }
 
 
@@ -202,7 +209,7 @@
 {
     m_Column = column;
 //    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:m_NumOfIssue];
-    textView.text = [NSString stringWithFormat:@"推荐栏目%@",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
+    textView.text = [NSString stringWithFormat:@"%@",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"columnInfo"]];
 
 //    NSLog(@"%i",m_Column);
 }
@@ -309,6 +316,8 @@
     textView = nil;
     [backGround release];
     backGround = nil;
+    [shareView release];
+    shareView = nil;
     [super dealloc];
 }
 
@@ -340,58 +349,58 @@
     isflage=!isflage;
 }
 
-#pragma mark -
-#pragma mark tableview delegate
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
-{
-    //    UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 200, 30)];
-    UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 200, 25)];
-    title.text = @"编辑内容";
-    title.textAlignment = NSTextAlignmentCenter;
-    [title setFont:[UIFont systemFontOfSize:17]];
-    title.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
-    //    [headerView addSubview:title];
-    return [title autorelease];
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
-{
-    return 25;
-}
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    return 85;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    
-}
-#pragma mark -
-#pragma mark tableview datasource
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return 1;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    UITableViewCell *cell = [[[UITableViewCell alloc]init] autorelease];
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    
-
-//    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:m_NumOfIssue];
-    textView.text = [NSString stringWithFormat:@"推荐栏目%@",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
-    [cell addSubview:textView];
-    [textView becomeFirstResponder];
-    return cell;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return 1;
-}
+//#pragma mark -
+//#pragma mark tableview delegate
+//- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+//{
+//    //    UIView *headerView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 200, 30)];
+//    UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 200, 25)];
+//    title.text = @"编辑内容";
+//    title.textAlignment = NSTextAlignmentCenter;
+//    [title setFont:[UIFont systemFontOfSize:17]];
+//    title.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
+//    //    [headerView addSubview:title];
+//    return [title autorelease];
+//}
+//
+//- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+//{
+//    return 25;
+//}
+//
+//- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    return 85;
+//}
+//
+//- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    
+//}
+//#pragma mark -
+//#pragma mark tableview datasource
+//- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+//{
+//    return 1;
+//}
+//
+//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+//{
+//    UITableViewCell *cell = [[[UITableViewCell alloc]init] autorelease];
+//    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//    
+//
+////    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:m_NumOfIssue];
+//    textView.text = [NSString stringWithFormat:@"%@",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"columnInfo"]];
+//    [cell addSubview:textView];
+//    [textView becomeFirstResponder];
+//    return cell;
+//}
+//
+//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+//{
+//    return 1;
+//}
 
 #pragma mark - SinaWeibo Delegate
 
@@ -442,13 +451,15 @@
 
 - (void)request:(SinaWeiboRequest *)request didFailWithError:(NSError *)error
 {
-    NSLog(@"sinaweibo logInDidFailWithError %@", error);
+    [MobClick event:@"shareFail" attributes:error.userInfo];
+    NSLog(@"sinaweibo logInDidFailWithError %@", error.userInfo);
     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"分享失败!" message:nil delegate:self cancelButtonTitle:@"确认" otherButtonTitles: nil];
     [alert show];
 }
 
 - (void)request:(SinaWeiboRequest *)request didFinishLoadingWithResult:(id)result
 {
+    [MobClick event:@"shareSucceed"];
     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"分享到微博成功!" message:nil delegate:self cancelButtonTitle:@"确认" otherButtonTitles: nil];
     [alert show];
 }

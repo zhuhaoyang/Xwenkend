@@ -31,7 +31,7 @@
 {
     if ((self = [super init]))
     {
-        self.frame = CGRectMake(0,0, 200, 300);
+        self.frame = CGRectMake(0,0, 160, 300);
         buttonsMutableArray = [[NSMutableArray alloc] init];
         self.cornerRadius = CORNER_RADIUS;
         self.buttonGradient = YES;
@@ -69,7 +69,7 @@
 - (void)addButtonWithTitle:(NSString *)title block:(void (^)())block 
 {
     [self addButtonWithTitle:title
-                       color:[UIColor colorWithRed:0.71 green:0.71 blue:0.71 alpha:1]
+                       color:[UIColor colorWithRed:1 green:0 blue:0 alpha:1]
                   titleColor:[UIColor whiteColor]
                  borderWidth:0
                  borderColor:[UIColor blackColor]
