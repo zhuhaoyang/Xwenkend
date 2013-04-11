@@ -30,7 +30,7 @@
 {
     btThumbnai *bt = sender;
     [Publisher sharedPublisher].numOfPage = [[bt.dicUserInfo objectForKey:@"page"] integerValue];
-//    NSLog(@"%@",bt.dicUserInfo);
+//    //    NSLog(@"%@",bt.dicUserInfo);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"moveTo" object:nil userInfo:bt.dicUserInfo];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"remove" object:nil];
 
@@ -131,9 +131,9 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-//    NSLog(@"%f",scrollView.contentOffset.x);
+//    //    NSLog(@"%f",scrollView.contentOffset.x);
     NSInteger offSet = scrollView.contentOffset.x/200+4;
-//    NSLog(@"%ld",(long)offSet);
+//    //    NSLog(@"%ld",(long)offSet);
 
     if ([arrThumbnailInfo count] <= 4 ||offSet >([arrThumbnailInfo count] - 1)) {
         return;
@@ -155,7 +155,7 @@
         
         
         NSInteger offSet = scrollView.contentOffset.x/200+4;
-//        NSLog(@"%ld",(long)offSet);
+//        //    NSLog(@"%ld",(long)offSet);
         if (offSet < [arrThumbnailInfo count]) {
             NSDictionary *dic = [arrThumbnailInfo objectAtIndex:offSet];
             NSInteger numOfPaages = [[dic objectForKey:@"numOfPaages"] integerValue];

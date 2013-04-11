@@ -74,7 +74,7 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
                            issues = [[NSArray alloc] initWithArray:tmpIssues];
                            ready = YES;
                            [self addIssuesInNewsstand];
-                           NSLog(@"%@",issues);
+                           //    NSLog(@"%@",issues);
                            
                            // Store product identifiers
                            if (m_productIdentifiers) {
@@ -90,9 +90,9 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
                                BOOL productPurchased = [[NSUserDefaults standardUserDefaults] boolForKey:productIdentifier];
                                if (productPurchased) {
                                    [purchasedProducts addObject:productIdentifier];
-                                   NSLog(@"Previously purchased: %@", productIdentifier);
+                                   //    NSLog(@"Previously purchased: %@", productIdentifier);
                                }
-                               NSLog(@"Not purchased: %@", productIdentifier);
+                               //    NSLog(@"Not purchased: %@", productIdentifier);
                            }
                            self.m_purchasedProducts = purchasedProducts;
 
@@ -114,8 +114,8 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
             nkIssue = [nkLib addIssueWithName:name date:[(NSDictionary *)obj objectForKey:@"date"]];
             
         }
-        NSLog(@"nkIssue = %@",nkIssue);
-        NSLog(@"status = %i",nkIssue.status);
+        //    NSLog(@"nkIssue = %@",nkIssue);
+        //    NSLog(@"status = %i",nkIssue.status);
     }];
 }
 
@@ -188,7 +188,7 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
             *stop=YES;
         }
     }];
-    NSLog(@"Content URL for issue with name %@ is %@",name,contentURL);
+    //    NSLog(@"Content URL for issue with name %@ is %@",name,contentURL);
     return [contentURL autorelease];
 }
 
@@ -217,8 +217,8 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
     
-    NSLog(@"Received products results...");
-    NSLog(@"%@",response.products);
+//    //    NSLog(@"Received products results...");
+//    //    NSLog(@"%@",response.products);
     if (_m_products) {
         [_m_products release];
     }
@@ -232,14 +232,14 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
             }
         }
 
-        NSLog(@"productIdentifier = %@",obj.productIdentifier);
-        NSLog(@"localizedDescription = %@",obj.localizedDescription);
-        NSLog(@"downloadable = %i",obj.downloadable);
-        NSLog(@"downloadContentVersion = %@",obj.downloadContentVersion);
-        NSLog(@"localizedTitle = %@",obj.localizedTitle);
-        NSLog(@"price = %@",obj.price);
-        NSLog(@"priceLocale = %@",obj.priceLocale);
-        NSLog(@"localizedTitle = %@",obj.localizedTitle);
+//        //    NSLog(@"productIdentifier = %@",obj.productIdentifier);
+//        //    NSLog(@"localizedDescription = %@",obj.localizedDescription);
+//        //    NSLog(@"downloadable = %i",obj.downloadable);
+//        //    NSLog(@"downloadContentVersion = %@",obj.downloadContentVersion);
+//        //    NSLog(@"localizedTitle = %@",obj.localizedTitle);
+//        //    NSLog(@"price = %@",obj.price);
+//        //    NSLog(@"priceLocale = %@",obj.priceLocale);
+//        //    NSLog(@"localizedTitle = %@",obj.localizedTitle);
     }
     
     
@@ -260,9 +260,9 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 //            BOOL productPurchased = [[NSUserDefaults standardUserDefaults] boolForKey:productIdentifier];
 //            if (productPurchased) {
 //                [purchasedProducts addObject:productIdentifier];
-//                NSLog(@"Previously purchased: %@", productIdentifier);
+//                //    NSLog(@"Previously purchased: %@", productIdentifier);
 //            }
-//            NSLog(@"Not purchased: %@", productIdentifier);
+//            //    NSLog(@"Not purchased: %@", productIdentifier);
 //        }
 //        self.m_purchasedProducts = purchasedProducts;
 //        
@@ -276,7 +276,7 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 
 - (void)provideContent:(NSString *)productIdentifier {
     
-    NSLog(@"Toggling flag for: %@", productIdentifier);
+    //    NSLog(@"Toggling flag for: %@", productIdentifier);
     [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:productIdentifier];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [self.m_purchasedProducts addObject:productIdentifier];
@@ -287,7 +287,7 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 
 - (void)completeTransaction:(SKPaymentTransaction *)transaction {
     
-    NSLog(@"completeTransaction...");
+    //    NSLog(@"completeTransaction...");
     
     [self recordTransaction: transaction];
     [self provideContent: transaction.payment.productIdentifier];
@@ -297,7 +297,7 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 
 - (void)restoreTransaction:(SKPaymentTransaction *)transaction {
     
-    NSLog(@"restoreTransaction...");
+    //    NSLog(@"restoreTransaction...");
     
     [self recordTransaction: transaction];
     [self provideContent: transaction.originalTransaction.payment.productIdentifier];
@@ -309,7 +309,7 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
     
     if (transaction.error.code != SKErrorPaymentCancelled)
     {
-        NSLog(@"Transaction error: %@", transaction.error.localizedDescription);
+        //    NSLog(@"Transaction error: %@", transaction.error.localizedDescription);
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kProductPurchaseFailedNotification object:transaction];
@@ -340,7 +340,7 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 
 - (void)buyProductIdentifier:(NSString *)productIdentifier {
     
-    NSLog(@"Buying %@...", productIdentifier);
+    //    NSLog(@"Buying %@...", productIdentifier);
     
     //    SKPayment *payment = [SKPayment paymentWithProductIdentifier:productIdentifier];
     //    [[SKPaymentQueue defaultQueue] addPayment:payment];

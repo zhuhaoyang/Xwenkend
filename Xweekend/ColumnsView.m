@@ -168,7 +168,7 @@
 {
     nowColumn = page;
     NSDictionary *dic = notification.userInfo;
-//    NSLog(@"%@",dic);
+//    //    NSLog(@"%@",dic);
     NSInteger column = [[dic objectForKey:@"column"] integerValue];
     NSInteger m_page = [[dic objectForKey:@"page"] integerValue];
     [self removeColums:[NSNumber numberWithInteger:column]];
@@ -263,7 +263,7 @@
 //        CGFloat pageWidth = scrollView.frame.size.width;
 //		int index = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth);
 //		page = index;
-//        NSLog(@"%i",page);
+//        //    NSLog(@"%i",page);
 //    }
 }
 
@@ -282,7 +282,7 @@
                 CGFloat pageWidth = scrollView.frame.size.width;
         NSInteger index = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth);
         page = index + 2;
-//        NSLog(@"%i",page);
+//        //    NSLog(@"%i",page);
         [self removeColums:[NSNumber numberWithInteger:page]];
         [self.m_delegate turnToPage:page];
         

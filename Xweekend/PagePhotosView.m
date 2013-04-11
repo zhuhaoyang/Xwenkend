@@ -72,7 +72,7 @@
         m_btVisitWeibo.frame = CGRectMake(20, frame.size.height * (m_page-1)+281, 144, 44);
         [m_btVisitWeibo addTarget:self action:@selector(visitWeibo:) forControlEvents:UIControlEventTouchUpInside];
         m_btVisitWeibo.url = [dicWeiboURL objectForKey:strTag];
-        NSLog(@"%@",m_btVisitWeibo.url);
+//        //    NSLog(@"%@",m_btVisitWeibo.url);
         [m_scrollView addSubview:m_btVisitWeibo];
     }
 }
@@ -82,7 +82,7 @@
 
     btVisitWeibo *bt = sender;
     [MobClick event:@"visitWeibo" label:[NSString stringWithFormat:@"%@",bt.url]];
-    NSLog(@"%@",bt.url);
+//    //    NSLog(@"%@",bt.url);
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:bt.url]];
 }
 
@@ -101,8 +101,8 @@
 //        NSString *path = [[NSBundle mainBundle] pathForResource:@"issues" ofType:@"plist"];
 //        NSArray *arr = [[NSArray alloc]initWithContentsOfFile:path];
 //        NSDictionary *dicIssueInfo = [arr objectAtIndex:numOfIssue];
-//        NSLog(@"%@",dicIssueInfo);
-//        NSLog(@"%@",[dicIssueInfo objectForKey:@"weiboURL"]);
+//        //    NSLog(@"%@",dicIssueInfo);
+//        //    NSLog(@"%@",[dicIssueInfo objectForKey:@"weiboURL"]);
         NSDictionary *dicIssueInfo = [[NSDictionary alloc]initWithDictionary:[[Publisher sharedPublisher] issueAtIndex:numOfIssue]];
 		dicWeiboURL = [[NSDictionary alloc]initWithDictionary:[dicIssueInfo objectForKey:@"weiboURL"]];
         dicCopyrightPage = [[NSDictionary alloc]initWithDictionary:[dicIssueInfo objectForKey:@"copyrightPageURL"]];
@@ -186,7 +186,7 @@
     NSDictionary *dic = notification.userInfo;
     NSInteger m_tag = [[dic objectForKey:@"column"] integerValue];
     if (self.tag == m_tag) {
-//        NSLog(@"remove column %i",self.tag);
+//        //    NSLog(@"remove column %i",self.tag);
         for (NSInteger i = 0; i < kNumberOfPages; i++) {
             if ([[arrTag objectAtIndex:i] boolValue]) {
                 UIImageView *imageView = (UIImageView *)[m_scrollView viewWithTag:(i+1)];
@@ -205,9 +205,9 @@
 //        [self loadImage:page-1];
         [self loadImage:page];
 //        [Publisher sharedPublisher].numOfPage = page;
-    NSLog(@"PAGE = %i",page);
+    //    NSLog(@"PAGE = %i",page);
 //        [self loadImage:page+1];
-        NSLog(@"column = %i ,page = %@",self.tag,arrTag);
+        //    NSLog(@"column = %i ,page = %@",self.tag,arrTag);
     }
     if (self.tag == m_tag) {
         nowPage = page;
@@ -224,8 +224,8 @@
             [self loadImage:page];
             [self loadImage:page+1];
             [Publisher sharedPublisher].numOfPage = page;
-    NSLog(@"PAGE = %i",page);
-//            NSLog(@"column = %i ,page = %@",self.tag,arrTag);
+    //    NSLog(@"PAGE = %i",page);
+//            //    NSLog(@"column = %i ,page = %@",self.tag,arrTag);
 
         }else{
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -238,8 +238,8 @@
                     [self loadImage:page];
                     [self loadImage:page+1];
                     [Publisher sharedPublisher].numOfPage = page;
-    NSLog(@"PAGE = %i",page);
-//                    NSLog(@"column = %i ,page = %@",self.tag,arrTag);
+    //    NSLog(@"PAGE = %i",page);
+//                    //    NSLog(@"column = %i ,page = %@",self.tag,arrTag);
 
                 });
             });
@@ -312,8 +312,8 @@
     [self loadImage:page];
     [self loadImage:page+1];
     [Publisher sharedPublisher].numOfPage = page;
-    NSLog(@"PAGE = %i",page);
-//    NSLog(@"arrTag = %@",arrTag);
+    //    NSLog(@"PAGE = %i",page);
+//    //    NSLog(@"arrTag = %@",arrTag);
     
 }
 

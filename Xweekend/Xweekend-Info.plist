@@ -23,7 +23,7 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string></string>
+				<string>defaultcovers</string>
 			</array>
 			<key>UINewsstandBindingEdge</key>
 			<string>UINewsstandBindingEdgeLeft</string>

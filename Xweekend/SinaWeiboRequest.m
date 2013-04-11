@@ -270,7 +270,7 @@
         {
             if ([httpMethod isEqualToString:@"GET"])
             {
-                NSLog(@"can not use GET to upload a file");
+                //    NSLog(@"can not use GET to upload a file");
             }
             continue;
         }

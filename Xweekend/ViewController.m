@@ -109,7 +109,7 @@
     Reachability *reach = [Reachability reachabilityForInternetConnection];
     NetworkStatus netStatus = [reach currentReachabilityStatus];
     if (netStatus == NotReachable) {
-        NSLog(@"No internet connection!");
+        //    NSLog(@"No internet connection!");
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"无法连接到互联网"
                                                        message:nil
                                                       delegate:nil
@@ -232,7 +232,7 @@
     Reachability *reach = [Reachability reachabilityForInternetConnection];
     NetworkStatus netStatus = [reach currentReachabilityStatus];
     if (netStatus == NotReachable) {
-        NSLog(@"No internet connection!");
+        //    NSLog(@"No internet connection!");
         UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"无法连接到互联网"
                                                        message:nil
                                                       delegate:nil cancelButtonTitle:@"确认"
@@ -318,7 +318,7 @@
     isEdit = !isEdit;
 
 //    NKLibrary *nkLib = [NKLibrary sharedLibrary];
-//    NSLog(@"%@",nkLib.issues);
+//    //    NSLog(@"%@",nkLib.issues);
 //    [nkLib.issues enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
 //        [nkLib removeIssue:(NKIssue *)obj];
 //    }];
@@ -357,7 +357,7 @@
 }
 
 -(void)connectionDidResumeDownloading:(NSURLConnection *)connection totalBytesWritten:(long long)totalBytesWritten expectedTotalBytes:(long long)expectedTotalBytes {
-    NSLog(@"Resume downloading %f",1.f*totalBytesWritten/expectedTotalBytes);
+    //    NSLog(@"Resume downloading %f",1.f*totalBytesWritten/expectedTotalBytes);
     [self updateProgressOfConnection:connection withTotalBytesWritten:totalBytesWritten expectedTotalBytes:expectedTotalBytes];
 }
 
@@ -367,26 +367,26 @@
     NKIssue *nkIssue = dnl.issue;
     NSString *contentPath = [publisher downloadPathForIssue:nkIssue];
 //    NSError *moveError=nil;
-//    NSLog(@"File is being copied to %@",contentPath);
+//    //    NSLog(@"File is being copied to %@",contentPath);
     
 //    if([[NSFileManager defaultManager] moveItemAtPath:[destinationURL path] toPath:contentPath error:&moveError]==NO) {
-//        NSLog(@"Error copying file from %@ to %@",destinationURL,contentPath);
+//        //    NSLog(@"Error copying file from %@ to %@",destinationURL,contentPath);
 //    }
-//    NSLog(@"Error copying file from %@ to %@",destinationURL,contentPath);
+//    //    NSLog(@"Error copying file from %@ to %@",destinationURL,contentPath);
 //    NSString *strDestinationURL = [NSString stringWithContentsOfURL:destinationURL encoding:NSUTF8StringEncoding error:&moveError];
 //    NSString *strDestinationURL = [NSString stringWithFormat:@"%@",destinationURL];
 //    NSString *nameOfZip = [strDestinationURL lastPathComponent];
     NSString *filePath =  [destinationURL path];
 //    NSString *strContentPath = [NSString stringWithFormat:@"%@",contentPath];
     
-    NSLog( @"download to %@",filePath);
+    //    NSLog( @"download to %@",filePath);
     ZipArchive* za = [[ZipArchive alloc] init];
 	if( [za UnzipOpenFile:filePath] )
 	{
 		BOOL ret = [za UnzipFileTo:contentPath overWrite:YES];
 		if( NO==ret )
 		{
-            NSLog(@"Error unzip!");
+            //    NSLog(@"Error unzip!");
 		}
 		[za UnzipCloseFile];
 	}
@@ -398,15 +398,15 @@
 //    NSString *uniquePath=[[paths objectAtIndex:0] stringByAppendingPathComponent:@"pin.png"];
     BOOL blHave=[[NSFileManager defaultManager] fileExistsAtPath:filePath];
     if (!blHave) {
-        NSLog(@"no  have");
+        //    NSLog(@"no  have");
         return ;
     }else {
-        NSLog(@" have");
+        //    NSLog(@" have");
         BOOL blDele= [fileManager removeItemAtPath:filePath error:nil];
         if (blDele) {
-            NSLog(@"dele success");
+            //    NSLog(@"dele success");
         }else {
-            NSLog(@"dele fail");
+            //    NSLog(@"dele fail");
         }
         
     }
@@ -641,7 +641,7 @@
 -(void)publisherFailed:(NSNotification *)not {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:PublisherDidUpdateNotification object:publisher];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:PublisherFailedUpdateNotification object:publisher];
-    NSLog(@"%@",not);
+    //    NSLog(@"%@",not);
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"无法从服务器获取杂志列表"
                                                     message:nil
                                                    delegate:nil
@@ -681,8 +681,8 @@
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
 //    [MBProgressHUD hideHUDForView:self.view animated:YES];
     
-    NSString *productIdentifier = (NSString *) notification.object;
-    NSLog(@"Purchased: %@", productIdentifier);
+//    NSString *productIdentifier = (NSString *) notification.object;
+    //    NSLog(@"Purchased: %@", productIdentifier);
     
     [m_tableView reloadData];
     

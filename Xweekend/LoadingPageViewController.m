@@ -19,10 +19,10 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        NSLog(@"12312313%@",self.view);
+//        //    NSLog(@"12312313%@",self.view);
         self.view.autoresizingMask = UIViewAutoresizingNone;
         self.view.autoresizesSubviews = NO;
-//                NSLog(@"superView = %@",self.view.superview);
+//                //    NSLog(@"superView = %@",self.view.superview);
         self.view.frame = CGRectMake(0, 0, 768, 1024);
 
     }
@@ -41,7 +41,7 @@
         startLoge.frame = CGRectMake(0, 0, 768, 1024);
         startLoge.alpha = 0;
         [self.view addSubview:startLoge];
-//        NSLog(@"superView = %@",self.view.superview);
+//        //    NSLog(@"superView = %@",self.view.superview);
         [UIView beginAnimations: nil context: nil];
         [UIView setAnimationDuration: 0.5f];
         [UIView setAnimationDelegate: self];
@@ -59,7 +59,7 @@
         viewController = [[ViewController alloc]initWithNibName:@"ViewController" bundle:[NSBundle mainBundle]];
         nav = [[UINavigationController alloc]initWithRootViewController:viewController];
         [nav.navigationBar setBackgroundImage:[UIImage imageNamed:@"banner"] forBarMetrics:UIBarMetricsDefault];
-        //    NSLog(@"%@",self.view);
+        //    //    NSLog(@"%@",self.view);
         [self.view addSubview:nav.view];
 
 //        [self showMain];
@@ -71,13 +71,13 @@
 
 - (void)fadeScreen
 {
-//            NSLog(@"superView = %@",self.view.superview);
+//            //    NSLog(@"superView = %@",self.view.superview);
     self.view.frame = CGRectMake(0, 0, 768, 1024);
     viewController = [[ViewController alloc]initWithNibName:@"ViewController" bundle:[NSBundle mainBundle]];
 //    viewController.view.frame = CGRectMake(0, -20, 768, 1024);
     nav = [[UINavigationController alloc]initWithRootViewController:viewController];
     [nav.navigationBar setBackgroundImage:[UIImage imageNamed:@"banner"] forBarMetrics:UIBarMetricsDefault];
-    //    NSLog(@"%@",self.view);
+    //    //    NSLog(@"%@",self.view);
     [self.view addSubview:nav.view];
     [self.view bringSubviewToFront:startLoge];
 //	[UIView beginAnimations: nil context: nil];
@@ -128,9 +128,9 @@
     viewController = [[ViewController alloc]initWithNibName:@"ViewController" bundle:[NSBundle mainBundle]];
     nav = [[UINavigationController alloc]initWithRootViewController:viewController];
     [nav.navigationBar setBackgroundImage:[UIImage imageNamed:@"banner"] forBarMetrics:UIBarMetricsDefault];
-//    NSLog(@"%@",self.view);
+//    //    NSLog(@"%@",self.view);
     [self.view addSubview:nav.view];
-//    NSLog(@"%@ %@",self.view,nav.view);
+//    //    NSLog(@"%@ %@",self.view,nav.view);
 }
 
 - (void)didReceiveMemoryWarning

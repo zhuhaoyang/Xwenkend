@@ -37,7 +37,7 @@
         dicIssueInfo = [[NSDictionary alloc]initWithDictionary:dic];
         m_Column = 1;
         m_NumOfIssue = [numOfIssues integerValue] - 1;
-        NSLog(@"%i",m_NumOfIssue);
+        //    NSLog(@"%i",m_NumOfIssue);
 
         shareView = [[UIView alloc]initWithFrame:CGRectMake(109, 200, 550, 186)];
 //        [shareView setImage:[UIImage imageNamed:@"tag"]];
@@ -49,6 +49,7 @@
         UIImageView *img = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"tag"]];
         img.frame = CGRectMake(0, 0, 550, 186);
         [shareView addSubview:img];
+        [img release];
 //        [shareView bringSubviewToFront:img];
         textView = [[UITextView alloc]initWithFrame:CGRectMake(15, 30, 520, 156)];
         textView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
@@ -160,7 +161,7 @@
    [actionSheet addButtonWithTitle:@"分享到微博" block:^{
        [(UIButton *)[self.navigationController.navigationBar viewWithTag:101] setEnabled:NO];
        [(UIButton *)[self.navigationController.navigationBar viewWithTag:102] setEnabled:NO];
-       NSLog(@"%@",[shareView subviews]);
+       //    NSLog(@"%@",[shareView subviews]);
        [self.view addSubview:backGround];
        [self.view addSubview:shareView];
        [self.view bringSubviewToFront:shareView];
@@ -183,7 +184,7 @@
 
     [actionSheet cancelButtonWithTitle:@"取消" block:nil];
     actionSheet.cornerRadius = 5;
-    //    NSLog(@"%@",actionSheet.)
+    //    //    NSLog(@"%@",actionSheet.)
     [actionSheet showWithTouch:event];
     [actionSheet release];
 }
@@ -258,7 +259,7 @@
 //    NSDictionary *dicIssueInfo = [arrIssuesPlist objectAtIndex:m_NumOfIssue];
     textView.text = [NSString stringWithFormat:@"%@",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"columnInfo"]];
 
-//    NSLog(@"%i",m_Column);
+//    //    NSLog(@"%i",m_Column);
 }
 
 - (void)showThumbnail
@@ -316,7 +317,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-//    NSLog(@"show!");
+//    //    NSLog(@"show!");
     m_hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     m_hud.labelText = @"Loading comics...";
 
@@ -332,7 +333,7 @@
     m_ColumnsView = nil;
     m_ColumnsView = [[ColumnsView alloc]initWithFrame:self.view.bounds withDic:dicIssueInfo delegate:self numOfIssue:m_NumOfIssue];
     [self.view addSubview:m_ColumnsView];
-//    NSLog(@"hide!");
+//    //    NSLog(@"hide!");
     [MBProgressHUD hideHUDForView:self.view animated:YES];
 
 }
@@ -453,7 +454,7 @@
 
 - (void)sinaweiboDidLogIn:(SinaWeibo *)sinaweibo
 {
-    NSLog(@"sinaweiboDidLogIn userID = %@ accesstoken = %@ expirationDate = %@ refresh_token = %@", sinaweibo.userID, sinaweibo.accessToken, sinaweibo.expirationDate,sinaweibo.refreshToken);
+    //    NSLog(@"sinaweiboDidLogIn userID = %@ accesstoken = %@ expirationDate = %@ refresh_token = %@", sinaweibo.userID, sinaweibo.accessToken, sinaweibo.expirationDate,sinaweibo.refreshToken);
     if ([sinaweibo isAuthValid]) {
         
         Publisher *publisher = [Publisher sharedPublisher];
@@ -475,23 +476,23 @@
 
 - (void)sinaweiboDidLogOut:(SinaWeibo *)sinaweibo
 {
-    NSLog(@"sinaweiboDidLogOut");
+    //    NSLog(@"sinaweiboDidLogOut");
     //    [self removeAuthData];
 }
 
 - (void)sinaweiboLogInDidCancel:(SinaWeibo *)sinaweibo
 {
-    NSLog(@"sinaweiboLogInDidCancel");
+    //    NSLog(@"sinaweiboLogInDidCancel");
 }
 
 - (void)sinaweibo:(SinaWeibo *)sinaweibo logInDidFailWithError:(NSError *)error
 {
-    NSLog(@"sinaweibo logInDidFailWithError %@", error);
+    //    NSLog(@"sinaweibo logInDidFailWithError %@", error);
 }
 
 - (void)sinaweibo:(SinaWeibo *)sinaweibo accessTokenInvalidOrExpired:(NSError *)error
 {
-    NSLog(@"sinaweiboAccessTokenInvalidOrExpired %@", error);
+    //    NSLog(@"sinaweiboAccessTokenInvalidOrExpired %@", error);
     //    [self removeAuthData];
 }
 
@@ -500,7 +501,7 @@
 - (void)request:(SinaWeiboRequest *)request didFailWithError:(NSError *)error
 {
     [MobClick event:@"shareFail" attributes:error.userInfo];
-    NSLog(@"sinaweibo logInDidFailWithError %@", error.userInfo);
+    //    NSLog(@"sinaweibo logInDidFailWithError %@", error.userInfo);
     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"分享失败!" message:nil delegate:self cancelButtonTitle:@"确认" otherButtonTitles: nil];
     [alert show];
 }

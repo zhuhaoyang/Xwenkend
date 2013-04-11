@@ -27,7 +27,7 @@
     [[UIApplication sharedApplication]setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
     self.loadingPageViewController = [[LoadingPageViewController alloc] initWithNibName:@"LoadingPageViewController" bundle:nil];
     
-    NSLog(@"232323232%@",self.loadingPageViewController.view);
+//    //    NSLog(@"232323232%@",self.loadingPageViewController.view);
 //    nav = [[UINavigationController alloc]initWithRootViewController:viewController];
 //    [nav.navigationBar setBackgroundImage:[UIImage imageNamed:@"banner"] forBarMetrics:UIBarMetricsDefault];
     self.window.rootViewController = self.loadingPageViewController;

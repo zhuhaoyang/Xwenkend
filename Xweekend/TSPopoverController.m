@@ -46,7 +46,7 @@
         self.view.backgroundColor = [UIColor clearColor];
         self.arrowPosition = TSPopoverArrowPositionVertical;
         self.popoverBaseColor = [UIColor blackColor];
-        NSLog(@"%@",self.popoverBaseColor);
+        //    NSLog(@"%@",self.popoverBaseColor);
         self.popoverGradient = YES;
         screenRect = [[UIScreen mainScreen] bounds];
         if(self.interfaceOrientation == UIInterfaceOrientationLandscapeLeft || self.interfaceOrientation == UIInterfaceOrientationLandscapeRight){
@@ -97,7 +97,7 @@
 
 - (void) showPopoverWithTouch:(UIEvent*)senderEvent
 {
-    NSLog(@"%@",self);
+    //    NSLog(@"%@",self);
 
     UIView *senderView = [[senderEvent.allTouches anyObject] view];
     CGPoint applicationFramePoint = CGPointMake(screenRect.origin.x,0-screenRect.origin.y);
@@ -177,9 +177,9 @@
     popoverView.frame = [self popoverFrameRect:contentViewFrame senderPoint:senderPoint];
     popoverView.cornerRadius = self.cornerRadius;
     popoverView.baseColor = self.popoverBaseColor;
-    NSLog(@"%@",self);
-    NSLog(@"%@",self.popoverBaseColor);
-    NSLog(@"%@",popoverView.baseColor);
+    //    NSLog(@"%@",self);
+    //    NSLog(@"%@",self.popoverBaseColor);
+    //    NSLog(@"%@",popoverView.baseColor);
 
     popoverView.isGradient = self.popoverGradient;
     [popoverView addSubview:self.contentView];
