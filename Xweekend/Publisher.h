@@ -30,6 +30,7 @@ extern  NSString *PublisherFailedUpdateNotification;
 @property (nonatomic,readonly,getter = isReady) BOOL ready;
 @property (nonatomic,retain) NSArray * m_products;
 @property (nonatomic,retain) NSMutableSet *m_purchasedProducts;
+@property (nonatomic,assign) NSInteger numOfPage;
 + (Publisher *) sharedPublisher;
 
 -(void)addIssuesInNewsstand;

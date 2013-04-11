@@ -29,6 +29,7 @@
 - (void)move:(id)sender
 {
     btThumbnai *bt = sender;
+    [Publisher sharedPublisher].numOfPage = [[bt.dicUserInfo objectForKey:@"page"] integerValue];
 //    NSLog(@"%@",bt.dicUserInfo);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"moveTo" object:nil userInfo:bt.dicUserInfo];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"remove" object:nil];

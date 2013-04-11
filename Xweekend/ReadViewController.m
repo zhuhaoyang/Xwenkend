@@ -32,26 +32,30 @@
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+//        fun = 1;
         // Custom initialization
         dicIssueInfo = [[NSDictionary alloc]initWithDictionary:dic];
         m_Column = 1;
         m_NumOfIssue = [numOfIssues integerValue] - 1;
         NSLog(@"%i",m_NumOfIssue);
 
-        
-        shareView = [[UIImageView alloc]initWithFrame:CGRectMake(109, 200, 550, 186) ];
-        [shareView setImage:[UIImage imageNamed:@"tag"]];
-        shareView.layer.cornerRadius = 6;
-        shareView.layer.masksToBounds = YES;
+        shareView = [[UIView alloc]initWithFrame:CGRectMake(109, 200, 550, 186)];
+//        [shareView setImage:[UIImage imageNamed:@"tag"]];
+//        [img release];
+//        shareView.layer.cornerRadius = 6;
+//        shareView.layer.masksToBounds = YES;
 //        UIImageView *img = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"tag"]];
 //        [shareView addSubview:img];
-       
+        UIImageView *img = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"tag"]];
+        img.frame = CGRectMake(0, 0, 550, 186);
+        [shareView addSubview:img];
+//        [shareView bringSubviewToFront:img];
         textView = [[UITextView alloc]initWithFrame:CGRectMake(15, 30, 520, 156)];
         textView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
         textView.font = [UIFont systemFontOfSize:20];
         textView.delegate = self;
-//        textView.text = [NSString stringWithFormat:@"%@",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"columnInfo"]];
-        textView.text = @"萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈按时打算";
+        textView.text = [NSString stringWithFormat:@"%@",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"columnInfo"]];
+//        textView.text = @"萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈萨达是金卡和大厦等哈按时打算";
         textView.scrollEnabled = NO;
         [shareView addSubview:textView];
 
@@ -101,6 +105,7 @@
         [bt2 setBackgroundImage:[UIImage imageNamed:@"BUTTON3"] forState:UIControlStateNormal];
         bt2.tag = 102;
         [bt2 addTarget:self action:@selector(showThumbnail) forControlEvents:UIControlEventTouchUpInside];
+//        [bt2 addTarget:self action:@selector(happy) forControlEvents:UIControlEventTouchUpInside];
         [rightView addSubview:bt2];
 
         UIBarButtonItem *rightButton = [[UIBarButtonItem alloc]initWithCustomView:rightView];
@@ -130,6 +135,7 @@
     return self;
 }
 
+
 - (void)remove
 {
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -154,10 +160,24 @@
    [actionSheet addButtonWithTitle:@"分享到微博" block:^{
        [(UIButton *)[self.navigationController.navigationBar viewWithTag:101] setEnabled:NO];
        [(UIButton *)[self.navigationController.navigationBar viewWithTag:102] setEnabled:NO];
-//       NSLog(@"%@",[shareView subviews]);
+       NSLog(@"%@",[shareView subviews]);
        [self.view addSubview:backGround];
        [self.view addSubview:shareView];
+       [self.view bringSubviewToFront:shareView];
        [textView becomeFirstResponder];
+    }];
+
+    [actionSheet addButtonWithTitle:@"保存到相册" block:^{
+        Publisher *publisher = [Publisher sharedPublisher];
+        NKLibrary *nkLib = [NKLibrary sharedLibrary];
+        NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:m_NumOfIssue]];
+        //        NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
+        NSString *str = [NSString stringWithFormat:@"%@%i.jpg",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"],[Publisher sharedPublisher].numOfPage];
+        
+        NSString *path = [[nkIssue.contentURL path] stringByAppendingPathComponent:str];
+        UIImage *image = [UIImage imageWithContentsOfFile:path];
+//        UIImageWriteToSavedPhotosAlbum(image, self, nil, nil);
+        UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
     }];
 
 
@@ -167,7 +187,32 @@
     [actionSheet showWithTouch:event];
     [actionSheet release];
 }
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error
+  contextInfo:(void *)contextInfo
+{
+    // Was there an error?
+    if (error != NULL)
+    {
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"保存失败"
+                                                       message:nil
+                                                      delegate:nil
+                                             cancelButtonTitle:@"确认"
+                                             otherButtonTitles: nil];
+        [alert show];
+        
+    }
+    else  // No errors
+    {
+        // Show message image successfully saved
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"保存成功!"
+                                                       message:nil
+                                                      delegate:nil
+                                             cancelButtonTitle:@"确认"
+                                             otherButtonTitles: nil];
+        [alert show];
 
+    }
+}
 - (void)shareToWeibo
 {
     [(UIButton *)[self.navigationController.navigationBar viewWithTag:101] setEnabled:YES];
@@ -180,7 +225,9 @@
         Publisher *publisher = [Publisher sharedPublisher];
         NKLibrary *nkLib = [NKLibrary sharedLibrary];
         NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:m_NumOfIssue]];
-        NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
+//        NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
+        NSString *str = [NSString stringWithFormat:@"%@%i.jpg",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"],[Publisher sharedPublisher].numOfPage];
+
         NSString *path = [[nkIssue.contentURL path] stringByAppendingPathComponent:str];
         UIImage *image = [UIImage imageWithContentsOfFile:path];
 
@@ -412,7 +459,8 @@
         Publisher *publisher = [Publisher sharedPublisher];
         NKLibrary *nkLib = [NKLibrary sharedLibrary];
         NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:m_NumOfIssue]];
-        NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
+//        NSString *str = [NSString stringWithFormat:@"COVER%@.jpg",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"]];
+        NSString *str = [NSString stringWithFormat:@"%@%i.jpg",[[[dicIssueInfo objectForKey:@"contentInfo"] objectAtIndex:(m_Column - 1)]objectForKey:@"title"],[Publisher sharedPublisher].numOfPage];
         NSString *path = [[nkIssue.contentURL path] stringByAppendingPathComponent:str];
         UIImage *image = [UIImage imageWithContentsOfFile:path];
         [sinaweibo requestWithURL:@"statuses/upload.json"

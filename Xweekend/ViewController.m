@@ -110,6 +110,12 @@
     NetworkStatus netStatus = [reach currentReachabilityStatus];
     if (netStatus == NotReachable) {
         NSLog(@"No internet connection!");
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"无法连接到互联网"
+                                                       message:nil
+                                                      delegate:nil
+                                             cancelButtonTitle:@"确认"
+                                             otherButtonTitles: nil];
+        [alert show];
     } else {
         if (publisher.m_products != nil) {
             
@@ -223,6 +229,17 @@
 }
 
 -(void)downloadIssueAtIndex:(NSInteger)index {
+    Reachability *reach = [Reachability reachabilityForInternetConnection];
+    NetworkStatus netStatus = [reach currentReachabilityStatus];
+    if (netStatus == NotReachable) {
+        NSLog(@"No internet connection!");
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"无法连接到互联网"
+                                                       message:nil
+                                                      delegate:nil cancelButtonTitle:@"确认"
+                                             otherButtonTitles: nil];
+        [alert show];
+        return;
+    }
     NKLibrary *nkLib = [NKLibrary sharedLibrary];
     NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:index]];
     NSURL *downloadURL = [publisher contentURLForIssueWithName:nkIssue.name];
@@ -508,8 +525,9 @@
             [btLoadOrReadOrBuy addTarget:self action:@selector(loadOrReadOrBuy:) forControlEvents:UIControlEventTouchUpInside];
             btLoadOrReadOrBuy.tag = [[NSString stringWithFormat:@"3%i",num] integerValue];
 //            btLoadOrReadOrBuy.adjustsImageWhenHighlighted = NO;
-            UIButton *btDel = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            UIButton *btDel = [UIButton buttonWithType:UIButtonTypeCustom];
             btDel.frame = CGRectMake(200, -10, 30, 30);
+            [btDel setBackgroundImage:[UIImage imageNamed:@"delete"] forState:UIControlStateNormal];
 //            btDel.backgroundColor = [UIColor blackColor];
             [btDel addTarget:self action:@selector(deleteIssue:) forControlEvents:UIControlEventTouchUpInside];
             btDel.tag = [[NSString stringWithFormat:@"4%i",num] integerValue];
@@ -624,10 +642,10 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self name:PublisherDidUpdateNotification object:publisher];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:PublisherFailedUpdateNotification object:publisher];
     NSLog(@"%@",not);
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                    message:@"Cannot get issues from publisher server."
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"无法从服务器获取杂志列表"
+                                                    message:nil
                                                    delegate:nil
-                                          cancelButtonTitle:@"Close"
+                                          cancelButtonTitle:@"确认"
                                           otherButtonTitles:nil];
     [alert show];
     [alert release];

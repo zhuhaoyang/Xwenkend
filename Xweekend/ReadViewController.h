@@ -30,10 +30,11 @@ UITableViewDataSource,UITableViewDelegate>{
     MBProgressHUD *m_hud;
 //    UITableView *m_tableView;
     UIView *backGround;
-    UIImageView *shareView;
+    UIView *shareView;
     UITextView *textView;
     NSInteger m_Column;
     NSInteger m_NumOfIssue;
+//    NSInteger fun;
 }
 //@property (nonatomic,assign) NSInteger 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil dic:(NSDictionary *)dic numOfIssues:(NSString *)numOfIssues;

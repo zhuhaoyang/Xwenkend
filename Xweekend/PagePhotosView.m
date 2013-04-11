@@ -204,8 +204,10 @@
     if ((self.tag == (m_tag-1) || self.tag == (m_tag+1))) {
 //        [self loadImage:page-1];
         [self loadImage:page];
+//        [Publisher sharedPublisher].numOfPage = page;
+    NSLog(@"PAGE = %i",page);
 //        [self loadImage:page+1];
-//        NSLog(@"column = %i ,page = %@",self.tag,arrTag);
+        NSLog(@"column = %i ,page = %@",self.tag,arrTag);
     }
     if (self.tag == m_tag) {
         nowPage = page;
@@ -221,6 +223,8 @@
             [self loadImage:page-1];
             [self loadImage:page];
             [self loadImage:page+1];
+            [Publisher sharedPublisher].numOfPage = page;
+    NSLog(@"PAGE = %i",page);
 //            NSLog(@"column = %i ,page = %@",self.tag,arrTag);
 
         }else{
@@ -233,6 +237,8 @@
                     [self loadImage:page-1];
                     [self loadImage:page];
                     [self loadImage:page+1];
+                    [Publisher sharedPublisher].numOfPage = page;
+    NSLog(@"PAGE = %i",page);
 //                    NSLog(@"column = %i ,page = %@",self.tag,arrTag);
 
                 });
@@ -305,6 +311,8 @@
     [self loadImage:page-1];
     [self loadImage:page];
     [self loadImage:page+1];
+    [Publisher sharedPublisher].numOfPage = page;
+    NSLog(@"PAGE = %i",page);
 //    NSLog(@"arrTag = %@",arrTag);
     
 }
