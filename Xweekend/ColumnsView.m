@@ -25,7 +25,7 @@
         
         
         
-        
+        self.opaque = YES;
         self.m_delegate = delegate;
         // Initialization UIScrollView
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(move:) name:@"moveTo" object:nil];

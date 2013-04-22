@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <NewsstandKit/NewsstandKit.h>
 #import "StoreKit/StoreKit.h"
+#import "sys/utsname.h"
 
 #define kProductsLoadedNotification         @"ProductsLoaded"
 #define kProductPurchasedNotification       @"ProductPurchased"
@@ -24,7 +25,8 @@ extern  NSString *PublisherFailedUpdateNotification;
     NSArray * m_products;
     NSMutableSet * m_purchasedProducts;
     SKProductsRequest * m_request;
-
+    NSTimer *timer;
+    BOOL isRetina;
 }
 
 @property (nonatomic,readonly,getter = isReady) BOOL ready;
@@ -32,13 +34,14 @@ extern  NSString *PublisherFailedUpdateNotification;
 @property (nonatomic,retain) NSMutableSet *m_purchasedProducts;
 @property (nonatomic,assign) NSInteger numOfPage;
 + (Publisher *) sharedPublisher;
+- (BOOL)isRetina;
 
 -(void)addIssuesInNewsstand;
 -(void)getIssuesList;
 -(NSInteger)numberOfIssues;
--(NSString *)titleOfIssueAtIndex:(NSInteger)index;
+//-(NSString *)titleOfIssueAtIndex:(NSInteger)index;
 -(NSString *)nameOfIssueAtIndex:(NSInteger)index;
--(void)setCoverOfIssueAtIndex:(NSInteger)index completionBlock:(void(^)(UIImage *img))block;
+-(void)setCoverOfIssueAtIndex:(NSInteger)index completionBlock:(void(^)(NSString *fileName))block;
 -(NSURL *)contentURLForIssueWithName:(NSString *)name;
 -(NSString *)downloadPathForIssue:(NKIssue *)nkIssue;
 -(UIImage *)coverImageForIssue:(NKIssue *)nkIssue;

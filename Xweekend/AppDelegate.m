@@ -45,7 +45,7 @@
         self.sinaweibo.userID = [sinaweiboInfo objectForKey:@"UserIDKey"];
     }
 
-    [[SKPaymentQueue defaultQueue] addTransactionObserver:[Publisher sharedPublisher]];
+//    [[SKPaymentQueue defaultQueue] addTransactionObserver:[Publisher sharedPublisher]];
     
     
     //umeng

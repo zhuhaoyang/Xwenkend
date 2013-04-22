@@ -8,11 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "ViewController.h"
-@interface LoadingPageViewController : UIViewController{
+@interface LoadingPageViewController : UIViewController<UIScrollViewDelegate>{
     ViewController *viewController;
     UINavigationController *nav;
     NSTimer *timer;
     UIImageView *startLoge;
+    UIScrollView *guideView;
+    UIPageControl *pageControl;
 }
 
 - (void)fadeScreen;

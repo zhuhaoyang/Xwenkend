@@ -98,7 +98,7 @@
         bt1.frame = CGRectMake(0, 0, 55, 30);
         [bt1 setBackgroundImage:[UIImage imageNamed:@"BUTTON4"] forState:UIControlStateNormal];
         bt1.tag = 101;
-        [bt1 addTarget:self action:@selector(share: forEvent:) forControlEvents:UIControlEventTouchUpInside];
+        [bt1 addTarget:self action:@selector(share:forEvent:) forControlEvents:UIControlEventTouchUpInside];
         [rightView addSubview:bt1];
         
         UIButton *bt2 = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -319,7 +319,7 @@
     // Do any additional setup after loading the view from its nib.
 //    //    NSLog(@"show!");
     m_hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    m_hud.labelText = @"Loading comics...";
+    m_hud.labelText = @"加载中...";
 
 //    [m_ColumnsView release];
 

@@ -35,6 +35,7 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 -(id)init {
     self = [super init];
     if(self) {
+        [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
         ready = NO;
         issues = nil;
         
@@ -55,7 +56,7 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 -(void)getIssuesList {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0),
                    ^{
-                       NSArray *tmpIssues = [NSArray arrayWithContentsOfURL:[NSURL URLWithString:@"http://xweekend.b0.upaiyun.com/issues.plist"]];
+                       NSArray *tmpIssues = [NSArray arrayWithContentsOfURL:[NSURL URLWithString:@"http://xweekend.b0.upaiyun.com/issue.plist"]];
                        if(!tmpIssues) {
                            dispatch_async(dispatch_get_main_queue(), ^{
                                [[NSNotificationCenter defaultCenter] postNotificationName:PublisherFailedUpdateNotification object:self];
@@ -128,29 +129,66 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 }
 
 -(NSDictionary *)issueAtIndex:(NSInteger)index {
+//    NSLog(@"index = %d  dic = %@",index,[issues objectAtIndex:index]);
     return [issues objectAtIndex:index];
 }
 
--(NSString *)titleOfIssueAtIndex:(NSInteger)index {
-    return [[self issueAtIndex:index] objectForKey:@"title"];
-}
+//-(NSString *)titleOfIssueAtIndex:(NSInteger)index {
+//    return [[self issueAtIndex:index] objectForKey:@"title"];
+//}
 
 -(NSString *)nameOfIssueAtIndex:(NSInteger)index {
    return [[self issueAtIndex:index] objectForKey:@"name"];    
 }
 
--(void)setCoverOfIssueAtIndex:(NSInteger)index  completionBlock:(void(^)(UIImage *img))block {
+- (BOOL)isRetina
+{
+    // 需要#import "sys/utsname.h"
+    struct utsname systemInfo;
+    uname(&systemInfo);
+    NSString *deviceString = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
+
+    if ([deviceString isEqualToString:@"iPad3,1"])      return YES;
+    if ([deviceString isEqualToString:@"iPad3,2"])      return YES;
+    if ([deviceString isEqualToString:@"iPad3,3"])      return YES;
+    if ([deviceString isEqualToString:@"iPad3,4"])      return YES;
+    if ([deviceString isEqualToString:@"iPad3,5"])      return YES;
+    if ([deviceString isEqualToString:@"iPad3,6"])      return YES;
+//    NSLog(@"NOTE: Unknown device type: %@", deviceString);
+    return NO;
+}
+
+-(void)setCoverOfIssueAtIndex:(NSInteger)index  completionBlock:(void(^)(NSString *fileName))block {
     
 //    NKIssue *nkIssue = [[NKLibrary sharedLibrary] issueWithName:[self nameOfIssueAtIndex:index]];
-    
-    NSURL *coverURL = [NSURL URLWithString:[[self issueAtIndex:index] objectForKey:@"cover"]];
-    NSString *coverFileName = [coverURL lastPathComponent];
+    NSURL *coverURL;
+    NSString *coverFileName;
+    NSString *coverFilePath;
+    NSMutableString *returnPath;
+//    NSLog(@"%d",[self isRetina]);
+    if ([self isRetina]) {
+//    if (1) {
+        isRetina = YES;
+        coverURL = [NSURL URLWithString:[[self issueAtIndex:index] objectForKey:@"cover@2x"]];
+        coverFileName = [coverURL lastPathComponent];
+        coverFilePath = [CacheDirectory stringByAppendingPathComponent:coverFileName];
+        NSUInteger length = [coverFilePath length];
+        returnPath = [NSMutableString stringWithString:coverFilePath];
+        [returnPath deleteCharactersInRange:NSMakeRange(length - 7, 3)];
+    }else{
+        isRetina = NO;
+        coverURL = [NSURL URLWithString:[[self issueAtIndex:index] objectForKey:@"cover"]];
+        coverFileName = [coverURL lastPathComponent];
+        coverFilePath = [CacheDirectory stringByAppendingPathComponent:coverFileName];
+        returnPath = [NSMutableString stringWithString:coverFilePath];
+    }
+
 //    NSString *coverFilePath = [[self downloadPathForIssue:nkIssue] stringByAppendingPathComponent:coverFileName];
 
-    NSString *coverFilePath = [CacheDirectory stringByAppendingPathComponent:coverFileName];
     UIImage *image = [UIImage imageWithContentsOfFile:coverFilePath];
+//    NSLog(@"%@",coverFilePath);
     if(image) {
-        block(image);
+        block(returnPath);
     } else {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),
                        ^{
@@ -158,7 +196,7 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
                            UIImage *image = [UIImage imageWithData:imageData];
                            if(image) {
                                [imageData writeToFile:coverFilePath atomically:YES];
-                               block(image);
+                               block(returnPath);
                            }
                        });
     }
@@ -206,17 +244,29 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
     m_request = [[SKProductsRequest alloc] initWithProductIdentifiers:m_productIdentifiers];
     m_request.delegate = self;
     [m_request start];
-    [self performSelector:@selector(timeout:) withObject:nil afterDelay:30.0];
+//    [self performSelector:@selector(timeout) withObject:nil afterDelay:3.0];
+//    timer = [NSTimer scheduledTimerWithTimeInterval: 10.0
+//                                     target: self
+//                                   selector: @selector(timeout)
+//                                   userInfo: nil repeats: NO];
 
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self performSelector:@selector(timeout) withObject:nil afterDelay:15.0];
+    });
     
 }
 
-- (void)timeout:(id)arg {
-    [[NSNotificationCenter defaultCenter] postNotificationName:PublisherFailedUpdateNotification object:self];
+- (void)timeout
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"timeout" object:self];
 }
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response {
-    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [NSObject cancelPreviousPerformRequestsWithTarget:self];
+    });
+
+//    [timer invalidate];
 //    //    NSLog(@"Received products results...");
 //    //    NSLog(@"%@",response.products);
     if (_m_products) {

@@ -17,11 +17,11 @@
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil numOfIssue:(NSInteger)num
 {
+    numOfIssue = num;
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        
-        numOfIssue = num;
+        self.view.opaque = YES;
     }
     return self;
 }

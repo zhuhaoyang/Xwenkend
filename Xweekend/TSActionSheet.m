@@ -137,7 +137,7 @@
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.frame = CGRectMake(BORDER, buttonY, self.bounds.size.width-BORDER*2, buttonHeight);
         button.titleLabel.font = [UIFont boldSystemFontOfSize:20];
-        button.titleLabel.minimumScaleFactor = 6;
+//        button.titleLabel.minimumScaleFactor = 6;
         button.titleLabel.adjustsFontSizeToFitWidth = YES;
         button.titleLabel.textAlignment = NSTextAlignmentCenter;
         button.backgroundColor = [UIColor clearColor];

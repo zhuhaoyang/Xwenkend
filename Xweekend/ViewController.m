@@ -20,8 +20,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
-        publisher = [Publisher sharedPublisher];
-        isEdit = NO;
+        
     }
     return self;
 }
@@ -29,7 +28,19 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    self.title = @"行周末";
+    self.view.opaque = YES;
+    publisher = [Publisher sharedPublisher];
+    isEdit = NO;
+//    self.title = @"行周末";
+    UILabel *title = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, 200, 44)];
+    title.text = @"行周末";
+    title.textAlignment = NSTextAlignmentCenter;
+    title.textColor = [UIColor blackColor];
+    title.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
+    title.font = [UIFont boldSystemFontOfSize:23];
+    self.navigationItem.titleView = title;
+    [title release];
+    
     UIView *liftView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 120, 30)];
 //    editButton = [[UIBarButtonItem alloc] initWithTitle:@"编辑" style:UIBarButtonItemStyleBordered target:self action:@selector(edit)];
     editButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -53,7 +64,7 @@
     
     backView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 768, 1024)];
     m_hud = [MBProgressHUD showHUDAddedTo:backView animated:YES];
-    m_hud.labelText = @"Loading comics...";
+    m_hud.labelText = @"加载中...";
 //    [self.view setBackgroundColor:[UIColor blackColor]];
 //    refreshButton = [UIButton buttonWithType:UIButtonTypeCustom];
 //    [refreshButton setBackgroundImage:[UIImage imageNamed:@"BUTTON9"] forState:UIControlStateNormal];
@@ -104,7 +115,7 @@
     m_tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [backGroundView release];
     [self.view addSubview:m_tableView];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(timeout) name:@"timeout" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(productsLoaded:) name:kProductsLoadedNotification object:nil];
     Reachability *reach = [Reachability reachabilityForInternetConnection];
     NetworkStatus netStatus = [reach currentReachabilityStatus];
@@ -122,7 +133,7 @@
 //            [[Publisher sharedPublisher] requestProducts];
 //            m_hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
 //            m_hud.labelText = @"Loading comics...";
-            [self performSelector:@selector(timeout:) withObject:nil afterDelay:30.0];
+//            [self performSelector:@selector(timeout:) withObject:nil afterDelay:30.0];
             
         }
     }
@@ -156,6 +167,9 @@
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kProductsLoadedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kProductPurchasedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kProductPurchaseFailedNotification object:nil];
     [m_tableView release];
     m_tableView = nil;
     [btRead release];
@@ -182,7 +196,6 @@
         NSMutableString *str = [NSMutableString stringWithFormat:@"%i",bt.tag];
         [str deleteCharactersInRange:NSMakeRange(0, 1)];
         NSInteger num = [str integerValue] - 1;
-        
         NKLibrary *nkLib = [NKLibrary sharedLibrary];
         NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:num]];
         // NSURL *downloadURL = [nkIssue contentURL];
@@ -197,8 +210,9 @@
         }else{
             [publisher buyProductIdentifier:[[publisher issueAtIndex:num] objectForKey:@"productIdentifier"]];
         }
-    
     }
+
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -298,7 +312,7 @@
             btDel.enabled = NO;
             btDel.alpha = 0.0;
         }
-        refreshButton.enabled = YES;
+        [refreshButton setEnabled:YES];
     }else{
 //        [editButton setTitle:@"完成" forState:UIControlStateNormal];
         [editButton setBackgroundImage:[UIImage imageNamed:@"BUTTON7"] forState:UIControlStateNormal];
@@ -311,7 +325,7 @@
                 btDel.alpha = 1.0;
             }
         }
-        refreshButton.enabled = NO;
+        [refreshButton setEnabled:NO];
     }
     
 //    [m_tableView reloadData];
@@ -489,30 +503,60 @@
             cellBackgroundView.layer.shadowOffset = CGSizeMake(0, 4);
             cellBackgroundView.layer.shadowOpacity = 0.5;
             cellBackgroundView.layer.shadowRadius = 4.0;
-
+//            cellBackgroundView.layer.shadowPath = [[UIBezierPath bezierPathWithRect:cellBackgroundView.bounds] CGPath];
             }
         for (NSUInteger column = 1; column <= 3; column++) {
             NSUInteger num = (row - 1)*3+column;
             if (num > [publisher numberOfIssues]) {
                 break;
             }
+           
             UIButton * bt = [UIButton buttonWithType:UIButtonTypeCustom];
-            bt.frame = CGRectMake((column - 1)*256 + 18, 10, 220, 286);
+            bt.tag = [[NSString stringWithFormat:@"1%i",num] integerValue];
+            //            bt.adjustsImageWhenHighlighted = NO;
+            [bt addTarget:self action:@selector(loadOrReadOrBuy:) forControlEvents:UIControlEventTouchUpInside];
+            bt.showsTouchWhenHighlighted = YES;
             
-//            NSString *str = [[arrIssuesPlist objectAtIndex:(num - 1)] objectForKey:@"cover"];
-//            UIImage *image = [UIImage imageNamed:str];
-            [publisher setCoverOfIssueAtIndex:(num - 1) completionBlock:^(UIImage *image) {
+            UIButton *btDel = [UIButton buttonWithType:UIButtonTypeCustom];
+            [btDel setBackgroundImage:[UIImage imageNamed:@"delete"] forState:UIControlStateNormal];
+            //            btDel.backgroundColor = [UIColor blackColor];
+            [btDel addTarget:self action:@selector(deleteIssue:) forControlEvents:UIControlEventTouchUpInside];
+            btDel.tag = [[NSString stringWithFormat:@"4%i",num] integerValue];
+            NKLibrary *nkLib = [NKLibrary sharedLibrary];
+            NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:(num-1)]];
+            if ((nkIssue.status == NKIssueContentStatusAvailable) &&isEdit) {
+                //                NSInteger tag = [[NSString stringWithFormat:@"4%i",num] integerValue];
+                //                UIButton *btDel = (UIButton *)[m_tableView viewWithTag:tag];
+                btDel.enabled = YES;
+                btDel.alpha = 1.0;
+            }else{
+                btDel.alpha = 0.0;
+                btDel.enabled = NO;
+            }
+//            NSLog(@"111111111");
+            [publisher setCoverOfIssueAtIndex:(num - 1) completionBlock:^(NSString *filePath) {
                 dispatch_async(dispatch_get_main_queue(), ^{
 //                    UITableViewCell *cell = [table_ cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row inSection:0]];
 //                    UIImageView *imageView = (UIImageView *)[cell viewWithTag:100];
+//                    NSMutableString * str = [NSMutableString stringWithString:fileName];
+//                    NSLog(@"%@",str);
+//                    NSUInteger length =  [str length];
+//                                        NSLog(@"%d",length);
+//                    [str deleteCharactersInRange:NSMakeRange(length - 7, 3)];
+//                                        NSLog(@"%@",str);
+                    UIImage *image = [UIImage imageWithContentsOfFile:filePath];
+//                                        NSLog(@"%@",image);
+                    bt.frame = CGRectMake( (column - 1)*256 + 18+5 + (220-image.size.width)/2, 20+(286-image.size.height),image.size.width-10, image.size.height-10);
                     [bt setBackgroundImage:image forState:UIControlStateNormal];
+//                    bt.frame.size = image.size
+                    btDel.frame = CGRectMake(bt.frame.size.width - 20, -10, 30, 30);
+
+                    [bt addSubview:btDel];
+
                 });
             }];
 //            [bt setBackgroundImage:image forState:UIControlStateNormal];
-            bt.tag = [[NSString stringWithFormat:@"1%i",num] integerValue];
-//            bt.adjustsImageWhenHighlighted = NO;
-            [bt addTarget:self action:@selector(loadOrReadOrBuy:) forControlEvents:UIControlEventTouchUpInside];
-            bt.showsTouchWhenHighlighted = YES;
+            
             
             UIProgressView *progressView = [[UIProgressView alloc]initWithProgressViewStyle:UIProgressViewStyleDefault];
             progressView.frame = CGRectMake((column - 1)*256 + 20, 300, 216, 9);
@@ -525,25 +569,8 @@
             [btLoadOrReadOrBuy addTarget:self action:@selector(loadOrReadOrBuy:) forControlEvents:UIControlEventTouchUpInside];
             btLoadOrReadOrBuy.tag = [[NSString stringWithFormat:@"3%i",num] integerValue];
 //            btLoadOrReadOrBuy.adjustsImageWhenHighlighted = NO;
-            UIButton *btDel = [UIButton buttonWithType:UIButtonTypeCustom];
-            btDel.frame = CGRectMake(200, -10, 30, 30);
-            [btDel setBackgroundImage:[UIImage imageNamed:@"delete"] forState:UIControlStateNormal];
-//            btDel.backgroundColor = [UIColor blackColor];
-            [btDel addTarget:self action:@selector(deleteIssue:) forControlEvents:UIControlEventTouchUpInside];
-            btDel.tag = [[NSString stringWithFormat:@"4%i",num] integerValue];
-            NKLibrary *nkLib = [NKLibrary sharedLibrary];
-            NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:(num-1)]];
-            if ((nkIssue.status == NKIssueContentStatusAvailable) &&isEdit) {
-//                NSInteger tag = [[NSString stringWithFormat:@"4%i",num] integerValue];
-//                UIButton *btDel = (UIButton *)[m_tableView viewWithTag:tag];
-                btDel.enabled = YES;
-                btDel.alpha = 1.0;
-            }else{
-                btDel.alpha = 0.0;
-                btDel.enabled = NO;
-            }
-            [bt addSubview:btDel];
-            
+
+//            NSLog(@"bt = %@ btDel = %@",bt.frame,btDel.frame);
             if ([publisher.m_purchasedProducts containsObject:[[publisher issueAtIndex:(num-1)] objectForKey:@"productIdentifier"]]) {
                 if(nkIssue.status==NKIssueContentStatusAvailable) {
                     [btLoadOrReadOrBuy setBackgroundImage:[UIImage imageNamed:@"ICON1"] forState:UIControlStateNormal];
@@ -595,10 +622,14 @@
         cellBackgroundView.layer.shadowOpacity = 0.5;
         cellBackgroundView.layer.shadowRadius = 4.0;
         cell.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0];
+//        cellBackgroundView.layer.shadowPath = [[UIBezierPath bezierPathWithRect:cellBackgroundView.bounds] CGPath];
+
     }
+    cellBackgroundView.opaque = YES;
     [cell setBackgroundView:cellBackgroundView];
     [cellBackgroundView release];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.opaque = YES;
     return cell;
 }
 
@@ -706,8 +737,17 @@
     
 }
 
-- (void)timeout:(id)arg {
+- (void)timeout {
     
+    UIAlertView *aler = [[UIAlertView alloc]initWithTitle:@"网络连接失败"
+                                                  message:@"请检查网络后再尝试"
+                                                 delegate:nil
+                                        cancelButtonTitle:@"确定"
+                                        otherButtonTitles: nil];
+    [aler show];
+    [self.navigationItem setRightBarButtonItem:refreshButton];
+    [m_tableView reloadData];
+
 //    m_hud.labelText = @"Timeout!";
 //    m_hud.detailsLabelText = @"Please try again later.";
 //    m_hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark.jpg"]];

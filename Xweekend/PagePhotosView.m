@@ -46,9 +46,10 @@
 //    NSString *path = [[NSBundle mainBundle] pathForResource:str ofType:@"jpg"];
     NSString *path = [[nkIssue.contentURL path] stringByAppendingPathComponent:str];
     UIImage *image = [UIImage imageWithContentsOfFile:path];
-    
+//    [image drawInRect:m_scrollView.frame];
     UIImageView *bigImage = [[UIImageView alloc]initWithImage:image];
-    
+    bigImage.opaque = YES;
+//    NSLog(@"%@",bigImage);
     CGRect frame = m_scrollView.frame;
     frame.origin.x = 0;
     frame.origin.y = frame.size.height * (m_page-1);
@@ -91,6 +92,7 @@
     if ((self = [super initWithFrame:frame])) {
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(move:) name:@"move" object:nil];
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(remove:) name:@"removePage" object:nil];
+        self.opaque = YES;
         numOfIssue = num;
         page = 1;
         dicData = [[NSDictionary alloc]initWithDictionary:dic];
