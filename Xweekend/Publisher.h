@@ -14,6 +14,7 @@
 #define kProductsLoadedNotification         @"ProductsLoaded"
 #define kProductPurchasedNotification       @"ProductPurchased"
 #define kProductPurchaseFailedNotification  @"ProductPurchaseFailed"
+#define kProductIdentifier1Year @"com.cbcm.xweekend.1year.98yuan"
 
 extern  NSString *PublisherDidUpdateNotification;
 extern  NSString *PublisherFailedUpdateNotification;
@@ -27,6 +28,7 @@ extern  NSString *PublisherFailedUpdateNotification;
     SKProductsRequest * m_request;
     NSTimer *timer;
     BOOL isRetina;
+    BOOL isSubscription;
 }
 
 @property (nonatomic,readonly,getter = isReady) BOOL ready;
@@ -35,7 +37,7 @@ extern  NSString *PublisherFailedUpdateNotification;
 @property (nonatomic,assign) NSInteger numOfPage;
 + (Publisher *) sharedPublisher;
 - (BOOL)isRetina;
-
+- (BOOL)isSubscription;
 -(void)addIssuesInNewsstand;
 -(void)getIssuesList;
 -(NSInteger)numberOfIssues;

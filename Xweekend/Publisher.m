@@ -38,6 +38,7 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
         [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
         ready = NO;
         issues = nil;
+        isSubscription = NO;
         
     }
     return self;
@@ -53,10 +54,16 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
     [super dealloc];
 }
 
+- (BOOL)isSubscription
+{
+    return isSubscription;
+}
+
 -(void)getIssuesList {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0),
                    ^{
                        NSArray *tmpIssues = [NSArray arrayWithContentsOfURL:[NSURL URLWithString:@"http://xweekend.b0.upaiyun.com/issue.plist"]];
+//                       NSDictionary *dicPlist = [NSDictionary dictionaryWithContentsOfURL:[NSURL URLWithString:@"http://xweekend.b0.upaiyun.com/issue.plist"]];
                        if(!tmpIssues) {
                            dispatch_async(dispatch_get_main_queue(), ^{
                                [[NSNotificationCenter defaultCenter] postNotificationName:PublisherFailedUpdateNotification object:self];
@@ -321,17 +328,34 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 //}
 
 - (void)recordTransaction:(SKPaymentTransaction *)transaction {
+    if ([transaction.payment.productIdentifier isEqualToString:kProductIdentifier1Year]) {
+        isSubscription = YES;
+    }
     // Optional: Record the transaction on the server side...
+    if (transaction.transactionState == SKPaymentTransactionStatePurchased) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kProductPurchasedNotification object:transaction.transactionIdentifier];
+//        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"订阅成功"
+//                                                       message:nil
+//                                                      delegate:nil
+//                                             cancelButtonTitle:@"确认"
+//                                             otherButtonTitles: nil];
+//        [alert show];
+    }else if(transaction.transactionState == SKPaymentTransactionStateRestored){
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kProductPurchasedNotification object:transaction.originalTransaction.payment.productIdentifier];
+
+    }
 }
 
 - (void)provideContent:(NSString *)productIdentifier {
-    
+//    NSLog(@"%@",productIdentifier);
     //    NSLog(@"Toggling flag for: %@", productIdentifier);
-    [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:productIdentifier];
+    if (productIdentifier) {
+        [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:productIdentifier];
+        [self.m_purchasedProducts addObject:productIdentifier];
+    }
     [[NSUserDefaults standardUserDefaults] synchronize];
-    [self.m_purchasedProducts addObject:productIdentifier];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:kProductPurchasedNotification object:productIdentifier];
     
 }
 
@@ -348,7 +372,7 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 - (void)restoreTransaction:(SKPaymentTransaction *)transaction {
     
     //    NSLog(@"restoreTransaction...");
-    
+
     [self recordTransaction: transaction];
     [self provideContent: transaction.originalTransaction.payment.productIdentifier];
     [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
@@ -372,6 +396,7 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 {
     for (SKPaymentTransaction *transaction in transactions)
     {
+//        NSLog(@"transactionState = %i",transaction.transactionState);
         switch (transaction.transactionState)
         {
             case SKPaymentTransactionStatePurchased:
@@ -382,6 +407,7 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
                 break;
             case SKPaymentTransactionStateRestored:
                 [self restoreTransaction:transaction];
+                break;
             default:
                 break;
         }

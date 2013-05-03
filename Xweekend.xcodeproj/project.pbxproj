@@ -113,6 +113,8 @@
 		C0B48F9B170AE2D400A5258E /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = C0B48F95170AE2D400A5258E /* unzip.c */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		C0B48F9C170AE2D400A5258E /* zip.c in Sources */ = {isa = PBXBuildFile; fileRef = C0B48F97170AE2D400A5258E /* zip.c */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		C0B48FA2170AE3AD00A5258E /* ZipArchive.mm in Sources */ = {isa = PBXBuildFile; fileRef = C0B48FA1170AE3AC00A5258E /* ZipArchive.mm */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		C0B6D34117336A350086020A /* BUTTON8.png in Resources */ = {isa = PBXBuildFile; fileRef = C0B6D33F17336A340086020A /* BUTTON8.png */; };
+		C0B6D34217336A350086020A /* BUTTON8@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C0B6D34017336A340086020A /* BUTTON8@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -255,6 +257,8 @@
 		C0B48F98170AE2D400A5258E /* zip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zip.h; sourceTree = "<group>"; };
 		C0B48FA0170AE3AC00A5258E /* ZipArchive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZipArchive.h; sourceTree = "<group>"; };
 		C0B48FA1170AE3AC00A5258E /* ZipArchive.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZipArchive.mm; sourceTree = "<group>"; };
+		C0B6D33F17336A340086020A /* BUTTON8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BUTTON8.png; sourceTree = "<group>"; };
+		C0B6D34017336A340086020A /* BUTTON8@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BUTTON8@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -394,6 +398,7 @@
 				C094E4B31713DA3900FB6224 /* BUTTON5.png */,
 				C094E4B41713DA3900FB6224 /* BUTTON6.png */,
 				C094E4B51713DA3900FB6224 /* BUTTON7.png */,
+				C0B6D33F17336A340086020A /* BUTTON8.png */,
 				C0973BDB17164C6100CC398E /* BUTTON9.png */,
 				C0322E0F1700289E00E6107E /* ICON1.png */,
 				C0322E111700289E00E6107E /* ICON3.png */,
@@ -409,6 +414,7 @@
 				C094E4BB1713DA5300FB6224 /* BUTTON5@2x.png */,
 				C094E4BC1713DA5300FB6224 /* BUTTON6@2x.png */,
 				C094E4BD1713DA5300FB6224 /* BUTTON7@2x.png */,
+				C0B6D34017336A340086020A /* BUTTON8@2x.png */,
 				C0973BDC17164C6200CC398E /* BUTTON9@2x.png */,
 				C0322DF91700281C00E6107E /* ICON1@2x.png */,
 				C0322DFB1700281C00E6107E /* ICON3@2x.png */,
@@ -615,6 +621,8 @@
 				C078CCA6171BB07A0050ABD5 /* guide3@2x.jpg in Resources */,
 				C078CCA7171BB07A0050ABD5 /* guide4@2x.jpg in Resources */,
 				C078CCA8171BB07A0050ABD5 /* guide5@2x.jpg in Resources */,
+				C0B6D34117336A350086020A /* BUTTON8.png in Resources */,
+				C0B6D34217336A350086020A /* BUTTON8@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

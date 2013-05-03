@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "zlib.h"
 #import "ZipArchive.h"
+
 @interface ViewController ()
 
 @end
@@ -41,7 +42,7 @@
     self.navigationItem.titleView = title;
     [title release];
     
-    UIView *liftView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 120, 30)];
+    UIView *liftView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 180, 30)];
 //    editButton = [[UIBarButtonItem alloc] initWithTitle:@"编辑" style:UIBarButtonItemStyleBordered target:self action:@selector(edit)];
     editButton = [UIButton buttonWithType:UIButtonTypeCustom];
     editButton.frame = CGRectMake(0, 0, 55, 30);
@@ -55,6 +56,13 @@
 //    [btRestore setTitle:@"恢复" forState:UIControlStateNormal];
     [btRestore setBackgroundImage:[UIImage imageNamed:@"BUTTON6"] forState:UIControlStateNormal];
     [liftView addSubview:btRestore];
+    
+    UIButton *btSubscibe = [UIButton buttonWithType:UIButtonTypeCustom];
+    btSubscibe.frame = CGRectMake(120, 0, 55, 30);
+    [btSubscibe addTarget:self action:@selector(subscibe) forControlEvents:UIControlEventTouchUpInside];
+    [btSubscibe setBackgroundImage:[UIImage imageNamed:@"BUTTON8"] forState:UIControlStateNormal];
+//    [btSubscibe setTitle:@"订阅" forState:UIControlStateNormal];
+    [liftView addSubview:btSubscibe];
     
     UIBarButtonItem *liftButton = [[UIBarButtonItem alloc]initWithCustomView:liftView];
     [self.navigationItem setLeftBarButtonItem:liftButton];
@@ -199,7 +207,7 @@
         NKLibrary *nkLib = [NKLibrary sharedLibrary];
         NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:num]];
         // NSURL *downloadURL = [nkIssue contentURL];
-        if ([publisher.m_purchasedProducts containsObject:[[publisher issueAtIndex:(num)] objectForKey:@"productIdentifier"]]) {
+        if ([publisher.m_purchasedProducts containsObject:[[publisher issueAtIndex:(num)] objectForKey:@"productIdentifier"]] || [[[publisher issueAtIndex:num]objectForKey:@"isFree"] boolValue]) {
             if (nkIssue.status != NKIssueContentStatusDownloading) {
                 if(nkIssue.status==NKIssueContentStatusAvailable) {
                     [self readIssue:str];
@@ -571,7 +579,13 @@
 //            btLoadOrReadOrBuy.adjustsImageWhenHighlighted = NO;
 
 //            NSLog(@"bt = %@ btDel = %@",bt.frame,btDel.frame);
-            if ([publisher.m_purchasedProducts containsObject:[[publisher issueAtIndex:(num-1)] objectForKey:@"productIdentifier"]]) {
+            
+            if ([[[publisher issueAtIndex:(num - 1)]objectForKey:@"isFree"] boolValue] ||[publisher isSubscription] || [publisher.m_purchasedProducts containsObject:[[publisher issueAtIndex:(num-1)] objectForKey:@"productIdentifier"]]) {
+//            if ([publisher.m_purchasedProducts containsObject:[[publisher issueAtIndex:(num-1)] objectForKey:@"productIdentifier"]]) {
+//                NSLog(@"free:%i",num);
+//                NSLog(@"isSubscription:%i",[publisher isSubscription]);
+//                NSLog(@"isFree:%i",[[[publisher issueAtIndex:(num - 1)]objectForKey:@"isFree"] boolValue]);
+//                NSLog(@"status = %i  %i",nkIssue.status,num);
                 if(nkIssue.status==NKIssueContentStatusAvailable) {
                     [btLoadOrReadOrBuy setBackgroundImage:[UIImage imageNamed:@"ICON1"] forState:UIControlStateNormal];
                     //                tapLabel.text=@"TAP TO READ";
@@ -587,6 +601,7 @@
                     } else {
                         btLoadOrReadOrBuy.alpha=1.0;
                         progressView.alpha=0.0;
+//                        NSLog(@"NKIssueContentStatusNone  %i",num);
                         [btLoadOrReadOrBuy setBackgroundImage:[UIImage imageNamed:@"ICON3"] forState:UIControlStateNormal];
                         
                         //                    tapLabel.alpha=1.0;
@@ -595,6 +610,7 @@
                     
                 }
             }else{
+//                NSLog(@"not free %i",num);
                 NSString *price = [[publisher issueAtIndex:(num-1)] objectForKey:@"price"];
                 [btLoadOrReadOrBuy setBackgroundImage:[UIImage imageNamed:@"ICON4"] forState:UIControlStateNormal];
                 [btLoadOrReadOrBuy setTitle:price forState:UIControlStateNormal];
@@ -692,6 +708,10 @@
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];    
 }
 
+- (void)subscibe
+{
+    [publisher buyProductIdentifier:kProductIdentifier1Year];
+}
 
 - (void)productsLoaded:(NSNotification *)notification {
     
@@ -714,7 +734,12 @@
     
 //    NSString *productIdentifier = (NSString *) notification.object;
     //    NSLog(@"Purchased: %@", productIdentifier);
-    
+//    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"订阅成功"
+//                                                   message:nil
+//                                                  delegate:nil
+//                                         cancelButtonTitle:@"确认"
+//                                         otherButtonTitles: nil];
+//    [alert show];
     [m_tableView reloadData];
     
 }
@@ -723,7 +748,7 @@
     
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
 //    [MBProgressHUD hideHUDForView:self.view animated:YES];
-    
+    [m_tableView reloadData];
     SKPaymentTransaction * transaction = (SKPaymentTransaction *) notification.object;
     if (transaction.error.code != SKErrorPaymentCancelled) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error!"
