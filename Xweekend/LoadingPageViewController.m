@@ -160,10 +160,10 @@
 //    //    NSLog(@"%@",self.view);
     [self.view addSubview:nav.view];
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"isLogined"]) {
-        NSLog(@"isLogined = %i",[[NSUserDefaults standardUserDefaults] boolForKey:@"isLogined"]);
+//        NSLog(@"isLogined = %i",[[NSUserDefaults standardUserDefaults] boolForKey:@"isLogined"]);
         [self.view bringSubviewToFront:startLoge];
     }else{
-                NSLog(@"isLogined = %i",[[NSUserDefaults standardUserDefaults] boolForKey:@"isLogined"]);
+//                NSLog(@"isLogined = %i",[[NSUserDefaults standardUserDefaults] boolForKey:@"isLogined"]);
         [self.view bringSubviewToFront:guideView];
         [self.view bringSubviewToFront:pageControl];
     }

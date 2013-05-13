@@ -28,7 +28,7 @@ extern  NSString *PublisherFailedUpdateNotification;
     SKProductsRequest * m_request;
     NSTimer *timer;
     BOOL isRetina;
-    BOOL isSubscription;
+//    BOOL isSubscription;
 }
 
 @property (nonatomic,readonly,getter = isReady) BOOL ready;

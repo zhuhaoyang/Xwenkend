@@ -38,7 +38,7 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
         [[SKPaymentQueue defaultQueue] addTransactionObserver:self];
         ready = NO;
         issues = nil;
-        isSubscription = NO;
+//        isSubscription = NO;
         
     }
     return self;
@@ -56,7 +56,10 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 
 - (BOOL)isSubscription
 {
+    BOOL isSubscription = [[NSUserDefaults standardUserDefaults] boolForKey:kProductIdentifier1Year];
+//    NSLog(@"isSubscription = %i",isSubscription);
     return isSubscription;
+//    return isSubscription;
 }
 
 -(void)getIssuesList {
@@ -328,9 +331,11 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 //}
 
 - (void)recordTransaction:(SKPaymentTransaction *)transaction {
-    if ([transaction.payment.productIdentifier isEqualToString:kProductIdentifier1Year]) {
-        isSubscription = YES;
-    }
+//    if ([transaction.payment.productIdentifier isEqualToString:kProductIdentifier1Year]) {
+//        isSubscription = YES;
+//        NSLog(@"isSubscription = %i",isSubscription);
+//    }
+//    NSLog(@"isSubscription = %i",isSubscription);
     // Optional: Record the transaction on the server side...
     if (transaction.transactionState == SKPaymentTransactionStatePurchased) {
         [[NSNotificationCenter defaultCenter] postNotificationName:kProductPurchasedNotification object:transaction.transactionIdentifier];
@@ -380,7 +385,8 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 }
 
 - (void)failedTransaction:(SKPaymentTransaction *)transaction {
-    
+//    NSLog(@"error = %i",transaction.error.code);
+//    NSLog(@"state = %i",transaction.transactionState);
     if (transaction.error.code != SKErrorPaymentCancelled)
     {
         //    NSLog(@"Transaction error: %@", transaction.error.localizedDescription);

@@ -207,7 +207,8 @@
         NKLibrary *nkLib = [NKLibrary sharedLibrary];
         NKIssue *nkIssue = [nkLib issueWithName:[publisher nameOfIssueAtIndex:num]];
         // NSURL *downloadURL = [nkIssue contentURL];
-        if ([publisher.m_purchasedProducts containsObject:[[publisher issueAtIndex:(num)] objectForKey:@"productIdentifier"]] || [[[publisher issueAtIndex:num]objectForKey:@"isFree"] boolValue]) {
+//        NSLog(@"%@",[publisher issueAtIndex:num]);
+        if ([publisher.m_purchasedProducts containsObject:[[publisher issueAtIndex:(num)] objectForKey:@"productIdentifier"]] ||[publisher isSubscription] || [[[publisher issueAtIndex:num]objectForKey:@"isFree"] boolValue]) {
             if (nkIssue.status != NKIssueContentStatusDownloading) {
                 if(nkIssue.status==NKIssueContentStatusAvailable) {
                     [self readIssue:str];
