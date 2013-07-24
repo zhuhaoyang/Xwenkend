@@ -502,7 +502,7 @@
 {
     [MobClick event:@"shareFail" attributes:error.userInfo];
     //    NSLog(@"sinaweibo logInDidFailWithError %@", error.userInfo);
-    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"分享失败!" message:nil delegate:self cancelButtonTitle:@"确认" otherButtonTitles: nil];
+    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"分享失败!" message:[error.userInfo objectForKey:NSLocalizedDescriptionKey] delegate:self cancelButtonTitle:@"确认" otherButtonTitles: nil];
     [alert show];
 }
 

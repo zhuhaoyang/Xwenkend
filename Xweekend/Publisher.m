@@ -65,7 +65,8 @@ NSString *PublisherFailedUpdateNotification = @"PublisherFailedUpdate";
 -(void)getIssuesList {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0),
                    ^{
-                       NSArray *tmpIssues = [NSArray arrayWithContentsOfURL:[NSURL URLWithString:@"http://xweekend.b0.upaiyun.com/issue.plist"]];
+                       NSArray *tmpIssues = [NSArray arrayWithContentsOfURL:[NSURL URLWithString:@"http://xweekend.b0.upaiyun.com/test.plist"]];
+//                       NSArray *tmpIssues = [NSArray arrayWithContentsOfURL:[NSURL URLWithString:@"http://xweekend.b0.upaiyun.com/issue.plist"]];
 //                       NSDictionary *dicPlist = [NSDictionary dictionaryWithContentsOfURL:[NSURL URLWithString:@"http://xweekend.b0.upaiyun.com/issue.plist"]];
                        if(!tmpIssues) {
                            dispatch_async(dispatch_get_main_queue(), ^{

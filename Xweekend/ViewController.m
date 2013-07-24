@@ -125,6 +125,8 @@
     [self.view addSubview:m_tableView];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(timeout) name:@"timeout" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(productsLoaded:) name:kProductsLoadedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newMagazine) name:kNewMagazineNotification object:nil];
+
     Reachability *reach = [Reachability reachabilityForInternetConnection];
     NetworkStatus netStatus = [reach currentReachabilityStatus];
     if (netStatus == NotReachable) {
@@ -173,11 +175,17 @@
 //}
 
 
+- (void)newMagazine
+{
+    [m_tableView reloadData];
+}
+
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kProductsLoadedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kProductPurchasedNotification object:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self name:kProductPurchaseFailedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:kNewMagazineNotification object:nil];
     [m_tableView release];
     m_tableView = nil;
     [btRead release];

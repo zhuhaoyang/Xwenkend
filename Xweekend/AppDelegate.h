@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "MobClick.h"
+#import "serviceNewDevice.h"
 #define kAppKey             @"3123568899"
 #define kAppSecret          @"f36aa095949a6fd54451ede65cd2e884"
-#define kAppRedirectURI     @"http://www.tingso.com"
+#define kAppRedirectURI     @"http://www.tingso.com/"
 
 #ifndef kAppKey
 #error
@@ -35,6 +36,7 @@
 //    NSTimer *timer;
 //    UIImageView *startLoge;
 
+    serviceNewDevice *m_serviceNewDevice;
 
 }
 

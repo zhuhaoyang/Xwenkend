@@ -15,6 +15,7 @@
 #define kProductPurchasedNotification       @"ProductPurchased"
 #define kProductPurchaseFailedNotification  @"ProductPurchaseFailed"
 #define kProductIdentifier1Year @"com.cbcm.xweekend.1year.98yuan"
+#define kNewMagazineNotification         @"newMagazine"
 
 extern  NSString *PublisherDidUpdateNotification;
 extern  NSString *PublisherFailedUpdateNotification;
